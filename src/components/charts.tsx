@@ -258,3 +258,75 @@ export function BillsChart({ bills, next }: { bills: { label: string; total: num
     </div>
   );
 }
+
+/** Money that becomes available each year, from fixed-income maturities. */
+export function MaturityChart({ years, noDue }: { years: { year: string; total: number }[]; noDue: number }) {
+  const tip = useTip();
+  const cols = [...years.map((y) => ({ label: y.year, total: y.total, free: false })), ...(noDue > 0 ? [{ label: "sem prazo", total: noDue, free: true }] : [])];
+  const W = 560, H = 180, L = 46, R = 6, T = 18, B = 22;
+  const hi = niceMax(Math.max(...cols.map((c) => c.total), 100));
+  const step = (W - L - R) / Math.max(cols.length, 1), bw = Math.min(40, step - 12);
+  const y = (v: number) => T + ((hi - v) * (H - T - B)) / hi;
+  return (
+    <div className="chart" ref={tip.ref} onPointerOver={tip.onOver} onPointerLeave={tip.onLeave}>
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Quanto vence em cada ano">
+        {[0, hi / 2, hi].map((v) => (
+          <g key={v}>
+            <line className="gl" x1={L} x2={W - R} y1={y(v)} y2={y(v)} />
+            <text className="ax" x={L - 8} y={y(v) + 3.5} textAnchor="end">{v ? BRLk(v) : "R$ 0"}</text>
+          </g>
+        ))}
+        {cols.map((c, k) => {
+          const x = L + step * k + step / 2 - bw / 2;
+          return (
+            <g key={c.label}>
+              <path
+                d={`M${x},${y(0)}V${y(c.total) + 4}q0,-4 4,-4h${bw - 8}q4,0 4,4V${y(0)}Z`}
+                fill={c.free ? "transparent" : "var(--mint)"}
+                stroke={c.free ? "var(--fg-3)" : undefined}
+                strokeDasharray={c.free ? "3 3" : undefined}
+                data-t={c.free ? `Sem vencimento (ações, liquidez diária) · ${BRL(c.total)}` : `Vence em ${c.label} · ${BRL(c.total)}`}
+              />
+              <text className="ax" x={x + bw / 2} y={y(c.total) - 6} textAnchor="middle" style={{ fill: "var(--fg-2)" }}>{BRLk(c.total)}</text>
+              <text className="ax" x={x + bw / 2} y={H - 4} textAnchor="middle">{c.label}</text>
+            </g>
+          );
+        })}
+      </svg>
+      {tip.node}
+    </div>
+  );
+}
+
+/** Invested total over time, from the daily snapshots taken at each sync. */
+export function HistoryChart({ points }: { points: { day: string; total: number }[] }) {
+  const tip = useTip();
+  const W = 440, H = 170, L = 48, R = 8, T = 10, B = 22;
+  const vals = points.map((p) => p.total);
+  const lo = Math.min(...vals), hiV = Math.max(...vals);
+  const pad = Math.max((hiV - lo) * 0.15, hiV * 0.01, 1);
+  const min = Math.max(0, lo - pad), max = hiV + pad;
+  const x = (i: number) => L + (i * (W - L - R)) / Math.max(points.length - 1, 1);
+  const y = (v: number) => T + ((max - v) * (H - T - B)) / (max - min);
+  const line = points.map((p, i) => `${x(i).toFixed(1)},${y(p.total).toFixed(1)}`).join("L");
+  return (
+    <div className="chart" ref={tip.ref} onPointerOver={tip.onOver} onPointerLeave={tip.onLeave}>
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Evolução do total investido">
+        {[min, (min + max) / 2, max].map((v) => (
+          <g key={v}>
+            <line className="gl" x1={L} x2={W - R} y1={y(v)} y2={y(v)} />
+            <text className="ax" x={L - 8} y={y(v) + 3.5} textAnchor="end">{BRLk(v)}</text>
+          </g>
+        ))}
+        <path d={`M${line}L${x(points.length - 1)},${H - B}L${L},${H - B}Z`} fill="var(--mint-dim)" />
+        <path d={`M${line}`} fill="none" stroke="var(--mint)" strokeWidth={2} />
+        {points.map((p, i) => (
+          <circle key={p.day} cx={x(i)} cy={y(p.total)} r={i === points.length - 1 ? 4.5 : 8} fill={i === points.length - 1 ? "var(--mint)" : "transparent"} data-t={`${p.day.slice(8, 10)}/${p.day.slice(5, 7)} · ${BRL(p.total)}`} />
+        ))}
+        <text className="ax" x={L} y={H - 4}>{`${points[0].day.slice(8, 10)}/${points[0].day.slice(5, 7)}`}</text>
+        <text className="ax" x={W - R} y={H - 4} textAnchor="end">{`${points[points.length - 1].day.slice(8, 10)}/${points[points.length - 1].day.slice(5, 7)}`}</text>
+      </svg>
+      {tip.node}
+    </div>
+  );
+}

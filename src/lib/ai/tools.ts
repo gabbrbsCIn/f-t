@@ -5,7 +5,7 @@ import { GROUPS, group } from "../categories";
 import { monthStart, today, validYm, ymOf } from "../dates";
 import { getDb } from "../db";
 import { normalize } from "../categorize";
-import { accounts, cardsView, installmentsView, overview, txsBetween } from "../queries";
+import { accounts, cardsView, installmentsView, investmentsView, overview, txsBetween } from "../queries";
 
 const GROUP_ENUM = ["moradia", "alim", "compras", "saude", "lazer", "transp", "outros"] as const;
 const ymSchema = z.string().regex(/^\d{4}-\d{2}$/).describe("Mês no formato AAAA-MM. Omita para o mês atual.");
@@ -146,6 +146,24 @@ export const TOOL_DEFS = [
         ainda_a_pagar: v.stillToPay,
         compras: v.plans.map((p) => ({ descricao: p.description, parcela: `${p.current}/${p.total}`, valor: p.value, termina: p.endYm })),
         comprometido_por_mes: v.committed.map((c) => ({ mes: c.ym, total: c.total })),
+      };
+    },
+  }),
+  def({
+    name: "investimentos",
+    description: "Investimentos: total líquido, quanto foi aplicado e rendeu, divisão por classe (CDB, Tesouro, ações), aplicações agrupadas com taxa e vencimentos por ano.",
+    schema: z.object({}),
+    run: async () => {
+      const v = await investmentsView();
+      return {
+        total_liquido: v.total,
+        total_bruto: v.gross,
+        aplicado_conhecido: v.investedKnown,
+        rendimento_conhecido: v.profitKnown,
+        por_classe: v.byClass.map((c) => ({ classe: c.name, total: c.total })),
+        aplicacoes: v.groups.map((g) => ({ nome: g.label, taxa: g.rate, quantidade: g.items.length, hoje: g.balance, aplicado: g.invested, proximo_vencimento: g.nextDue })),
+        vencimentos_por_ano: v.maturities,
+        sem_vencimento: v.noDue,
       };
     },
   }),

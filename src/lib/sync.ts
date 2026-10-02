@@ -79,8 +79,13 @@ export async function syncItem(itemId: string, dbIn?: Db) {
     await insertMany(
       db,
       "investments",
-      ["id", "item_id", "name", "type", "balance"],
-      inv.filter((i) => i.status !== "TOTAL_WITHDRAWAL").map((i) => [i.id, itemId, i.name, i.type, i.balance]),
+      ["id", "item_id", "name", "type", "subtype", "balance", "gross", "invested", "rate", "rate_type", "fixed_rate", "due_date", "purchase_date", "issuer", "code"],
+      inv
+        .filter((i) => i.status !== "TOTAL_WITHDRAWAL" && i.balance > 0)
+        .map((i) => [
+          i.id, itemId, i.name, i.type, i.subtype, i.balance, i.amount, i.amountOriginal, i.rate, i.rateType, i.fixedAnnualRate,
+          i.dueDate ? isoDay(i.dueDate) : null, i.purchaseDate ? isoDay(i.purchaseDate) : null, i.issuer, i.code,
+        ]),
       "ON CONFLICT (id) DO NOTHING",
     );
   } catch {
@@ -88,6 +93,7 @@ export async function syncItem(itemId: string, dbIn?: Db) {
   }
 
   await db.query("UPDATE items SET last_synced_at = $2 WHERE id = $1", [itemId, new Date().toISOString()]);
+  await snapshotInvestments(db);
   return { accounts: accounts.length, transactions: txCount };
 }
 
@@ -158,5 +164,15 @@ async function upsertTransactions(db: Db, acc: Account, txs: Transaction[], rule
        group_key = CASE WHEN transactions.user_edited THEN transactions.group_key ELSE EXCLUDED.group_key END,
        sub_label = CASE WHEN transactions.user_edited THEN transactions.sub_label ELSE EXCLUDED.sub_label END,
        excluded = CASE WHEN transactions.user_edited THEN transactions.excluded ELSE EXCLUDED.excluded END`,
+  );
+}
+
+/** One point per day of the invested total, so the investments page can draw its history over time. */
+export async function snapshotInvestments(db: Db) {
+  const [row] = await db.query<{ total: number | null; invested: number | null }>("SELECT sum(balance) AS total, sum(invested) AS invested FROM investments");
+  if (row?.total == null) return;
+  await db.query(
+    "INSERT INTO investment_snapshots (day, total, invested) VALUES ($1,$2,$3) ON CONFLICT (day) DO UPDATE SET total = EXCLUDED.total, invested = EXCLUDED.invested",
+    [today(), Math.round(row.total * 100) / 100, row.invested == null ? null : Math.round(row.invested * 100) / 100],
   );
 }

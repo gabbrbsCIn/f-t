@@ -159,3 +159,15 @@ export async function cardsView() {
     return { card: c, bills: bills.filter((b) => b.account_id === c.id).slice(-6), nextCommitted: next };
   });
 }
+
+export async function investmentsView() {
+  const db = await getDb();
+  const [rows, snaps] = await Promise.all([
+    db.query<import("./investments").InvestmentRow>(
+      "SELECT id, name, type, subtype, balance, gross, invested, rate, rate_type, fixed_rate, due_date, purchase_date, issuer, code FROM investments WHERE balance > 0",
+    ),
+    db.query<{ day: string; total: number }>("SELECT day, total FROM investment_snapshots ORDER BY day DESC LIMIT 365"),
+  ]);
+  const { summarize } = await import("./investments");
+  return { ...summarize(rows, today()), history: snaps.reverse() };
+}

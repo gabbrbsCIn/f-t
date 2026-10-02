@@ -60,6 +60,21 @@ CREATE TABLE IF NOT EXISTS investments (
   type text,
   balance double precision NOT NULL DEFAULT 0
 );
+ALTER TABLE investments ADD COLUMN IF NOT EXISTS subtype text;
+ALTER TABLE investments ADD COLUMN IF NOT EXISTS gross double precision;
+ALTER TABLE investments ADD COLUMN IF NOT EXISTS invested double precision;
+ALTER TABLE investments ADD COLUMN IF NOT EXISTS rate double precision;
+ALTER TABLE investments ADD COLUMN IF NOT EXISTS rate_type text;
+ALTER TABLE investments ADD COLUMN IF NOT EXISTS fixed_rate double precision;
+ALTER TABLE investments ADD COLUMN IF NOT EXISTS due_date text;
+ALTER TABLE investments ADD COLUMN IF NOT EXISTS purchase_date text;
+ALTER TABLE investments ADD COLUMN IF NOT EXISTS issuer text;
+ALTER TABLE investments ADD COLUMN IF NOT EXISTS code text;
+CREATE TABLE IF NOT EXISTS investment_snapshots (
+  day text PRIMARY KEY,
+  total double precision NOT NULL,
+  invested double precision
+);
 CREATE TABLE IF NOT EXISTS category_rules (
   pattern text PRIMARY KEY,
   group_key text NOT NULL,

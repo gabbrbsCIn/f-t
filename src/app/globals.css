@@ -338,3 +338,13 @@ a{color:inherit; text-decoration:none}
 .month .mbtn{width:28px; height:28px; border-radius:8px; color:var(--fg-2); display:grid; place-items:center; min-width:0}
 .month a.mbtn:hover{background:var(--raise); color:var(--fg)}
 .connect-hint{position:fixed; left:50%; bottom:16px; transform:translateX(-50%); z-index:2147483647; width:min(560px, calc(100% - 32px)); background:#fff8e1; color:#3d2e00; border:1px solid #e8b52e; border-radius:12px; padding:10px 14px; font-size:13px; line-height:1.4; box-shadow:0 8px 24px #0004}
+.inv-row{display:grid; grid-template-columns:20px minmax(0,1.6fr) minmax(0,.8fr) minmax(0,.8fr) minmax(0,1fr) minmax(0,.8fr); gap:12px; align-items:center; width:100%; padding:12px 20px; text-align:left; font-size:13.5px}
+button.inv-row:hover{background:var(--raise)}
+.inv-head{font-size:11.5px; color:var(--fg-3); padding-top:4px; padding-bottom:6px}
+.inv-sub{padding-top:7px; padding-bottom:7px; font-size:12.5px; background:color-mix(in srgb, var(--raise) 50%, transparent)}
+.inv-row .r{text-align:right}
+.chev.rot{transform:rotate(90deg)}
+@container app (max-width: 640px){
+  .inv-row{grid-template-columns:16px minmax(0,1fr) auto auto; padding:11px 14px}
+  .inv-row .hide-s{display:none}
+}

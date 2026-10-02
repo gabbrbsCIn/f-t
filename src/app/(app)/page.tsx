@@ -138,7 +138,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ m
             </div>
           ))}
         </div>
-        <div className="foot"><span>{o.bank.length} {o.bank.length === 1 ? "conta" : "contas"} · via Open Finance</span>{o.invested > 0 && <span>Investido: <b className="n" style={{ color: "var(--fg)" }}>{BRL(o.invested)}</b></span>}</div>
+        <div className="foot"><span>{o.bank.length} {o.bank.length === 1 ? "conta" : "contas"} · via Open Finance</span>{o.invested > 0 && <a href="/investimentos">Investido: <b className="n" style={{ color: "var(--fg)" }}>{BRL(o.invested)}</b> ↗</a>}</div>
       </article>
 
       <article className="p s6">

@@ -9,6 +9,7 @@ const LINKS: [string, string, IconName][] = [
   ["/parcelamentos", "Parcelamentos", "inst"],
   ["/categorias", "Categorias", "cats"],
   ["/cartoes", "Cartões", "cards"],
+  ["/investimentos", "Investimentos", "invest"],
 ];
 
 export function Nav() {
@@ -18,7 +19,7 @@ export function Nav() {
   return (
     <nav className="nav" aria-label="Seções">
       {LINKS.map(([href, label, icon]) => (
-        <Link key={href} href={m && href !== "/cartoes" ? `${href}?m=${m}` : href} aria-current={path === href ? "page" : undefined}>
+        <Link key={href} href={m && href !== "/cartoes" && href !== "/investimentos" ? `${href}?m=${m}` : href} aria-current={path === href ? "page" : undefined}>
           <Icon name={icon} />
           {label}
         </Link>
