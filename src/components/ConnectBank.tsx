@@ -92,6 +92,11 @@ export function ConnectBank() {
             router.refresh();
           }}
         />
+        {s.opened && (
+          <div className="connect-hint" role="note">
+            No último passo, a Pluggy abre uma <b>janela do MeuPluggy</b> para você entrar. Se nada aparecer ao clicar em “Conectar”, permita pop-ups para este site e tente de novo.
+          </div>
+        )}
         {!s.opened && (
           <div className="scrim">
             <div className="modal" role="status"><p className="muted" style={{ margin: 0 }}>Abrindo a janela da Pluggy…</p></div>

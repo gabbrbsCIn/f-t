@@ -337,3 +337,4 @@ a{color:inherit; text-decoration:none}
 .more{cursor:pointer}
 .month .mbtn{width:28px; height:28px; border-radius:8px; color:var(--fg-2); display:grid; place-items:center; min-width:0}
 .month a.mbtn:hover{background:var(--raise); color:var(--fg)}
+.connect-hint{position:fixed; left:50%; bottom:16px; transform:translateX(-50%); z-index:2147483647; width:min(560px, calc(100% - 32px)); background:#fff8e1; color:#3d2e00; border:1px solid #e8b52e; border-radius:12px; padding:10px 14px; font-size:13px; line-height:1.4; box-shadow:0 8px 24px #0004}
