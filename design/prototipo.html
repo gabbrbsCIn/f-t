@@ -1,42 +1,42 @@
 <title>Liu Liu</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..800&family=Geist+Mono:wght@400;500&display=swap">
 <style>
-/* Layout: top bar with pill nav, full-bleed 12-col bento per screen, chat lives in a drawer opened from a floating pill. Container queries drive the phone layout. */
+/* Layout: top pill nav; home opens with "pode gastar hoje" + liu liu's notes, then the month line; chat in a drawer. Category colors come from Brazilian banknotes. */
 :root{
-  --bg:#09090a; --panel:#0e0f10; --raise:#16181a; --raise-2:#1e2124;
-  --line:#1f2225; --line-2:#2a2e32;
-  --fg:#f1f3f2; --fg-2:#a3aaa7; --fg-3:#676e6b;
-  --mint:#3dd6a3; --mint-dim:#3dd6a326; --mint-ink:#04261b;
-  --pos:#56d08f; --neg:#ff7b6c; --warn:#f2b544;
-  /* category hues (color follows the entity) */
-  --c-moradia:#3987e5; --c-alim:#d95926; --c-compras:#199e70; --c-transp:#c98500;
-  --c-edu:#9085e9; --c-outros:#5f6764; --c-lazer:#d55181; --c-saude:#2f9e44; --c-assin:#e66767;
-  --f-ui:"Geist", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --bg:#0c131b; --panel:#121b25; --raise:#18232f; --raise-2:#203040;
+  --line:#1d2935; --line-2:#2a3846;
+  --fg:#eef2f5; --fg-2:#9fb0be; --fg-3:#647686;
+  --mint:#4fd3a0; --mint-dim:#4fd3a024; --mint-ink:#062a1d;
+  --pos:#5fd39a; --neg:#ff7d72; --warn:#e8b52e;
+  /* categories = notas do Real (R$100 garoupa, R$10 arara, R$20 mico, R$2 tartaruga, R$50 onça, R$5 garça) */
+  --c-moradia:#2a8fb3; --c-alim:#e0546e; --c-compras:#b3900e; --c-saude:#5b7fc0;
+  --c-lazer:#b8702f; --c-transp:#9a6fc2; --c-outros:#66717d;
+  --f-ui:"Archivo", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
   --f-num:"Geist Mono", ui-monospace, "SF Mono", Menlo, monospace;
   color-scheme:dark;
 }
 @media (prefers-color-scheme: light){
   :root:not([data-theme="dark"]){
-    --bg:#f4f5f4; --panel:#ffffff; --raise:#f1f3f2; --raise-2:#e7eae8;
-    --line:#e4e7e5; --line-2:#d3d8d5;
-    --fg:#0c0e0d; --fg-2:#4d5552; --fg-3:#858d8a;
-    --mint:#0c9a70; --mint-dim:#0c9a701c; --mint-ink:#ffffff;
-    --pos:#13824f; --neg:#d2402f; --warn:#a86d0c;
-    --c-moradia:#2a78d6; --c-alim:#eb6834; --c-compras:#1baf7a; --c-transp:#eda100;
-    --c-edu:#4a3aa7; --c-outros:#a4aba8; --c-lazer:#e87ba4; --c-saude:#008300; --c-assin:#e34948;
+    --bg:#eef2f5; --panel:#ffffff; --raise:#f1f4f7; --raise-2:#e3e9ee;
+    --line:#e1e7ec; --line-2:#cfd8df;
+    --fg:#0d1620; --fg-2:#4a5a68; --fg-3:#7f8e9b;
+    --mint:#0f9466; --mint-dim:#0f946618; --mint-ink:#ffffff;
+    --pos:#12804f; --neg:#c93a3a; --warn:#9c7400;
+    --c-moradia:#1f7fa3; --c-alim:#d2434a; --c-compras:#c9a21a; --c-saude:#4b6fb0;
+    --c-lazer:#a85f20; --c-transp:#8458b0; --c-outros:#8a939c;
     color-scheme:light;
   }
 }
 :root[data-theme="light"]{
-  --bg:#f4f5f4; --panel:#ffffff; --raise:#f1f3f2; --raise-2:#e7eae8;
-  --line:#e4e7e5; --line-2:#d3d8d5;
-  --fg:#0c0e0d; --fg-2:#4d5552; --fg-3:#858d8a;
-  --mint:#0c9a70; --mint-dim:#0c9a701c; --mint-ink:#ffffff;
-  --pos:#13824f; --neg:#d2402f; --warn:#a86d0c;
-  --c-moradia:#2a78d6; --c-alim:#eb6834; --c-compras:#1baf7a; --c-transp:#eda100;
-  --c-edu:#4a3aa7; --c-outros:#a4aba8; --c-lazer:#e87ba4; --c-saude:#008300; --c-assin:#e34948;
+  --bg:#eef2f5; --panel:#ffffff; --raise:#f1f4f7; --raise-2:#e3e9ee;
+  --line:#e1e7ec; --line-2:#cfd8df;
+  --fg:#0d1620; --fg-2:#4a5a68; --fg-3:#7f8e9b;
+  --mint:#0f9466; --mint-dim:#0f946618; --mint-ink:#ffffff;
+  --pos:#12804f; --neg:#c93a3a; --warn:#9c7400;
+  --c-moradia:#1f7fa3; --c-alim:#d2434a; --c-compras:#c9a21a; --c-saude:#4b6fb0;
+  --c-lazer:#a85f20; --c-transp:#8458b0; --c-outros:#8a939c;
   color-scheme:light;
 }
 
@@ -63,7 +63,7 @@ svg.i{width:16px; height:16px; fill:none; stroke:currentColor; stroke-width:1.6;
 .stage.phone .app{max-width:390px; height:min(830px, calc(100dvh - 52px)); border:6px solid var(--raise-2); border-radius:40px; background:var(--bg)}
 
 /* Wordmark: lowercase, dotless i with mint dots */
-.wm{font-weight:700; font-size:23px; letter-spacing:-.045em; line-height:1; display:inline-flex; gap:.22em; white-space:nowrap}
+.wm{font-weight:800; font-size:24px; font-stretch:88%; letter-spacing:-.03em; line-height:1; display:inline-flex; gap:.22em; white-space:nowrap}
 .wm .ii{position:relative}
 .wm .ii::after{content:""; position:absolute; left:50%; top:-.02em; width:.24em; height:.24em; margin-left:-.12em; border-radius:50%; background:var(--mint)}
 .mark{width:26px; height:26px; border-radius:8px; background:var(--fg); color:var(--bg); display:inline-grid; place-items:center; flex:none; position:relative; font-weight:700; font-size:13px; letter-spacing:-.06em}
@@ -92,8 +92,8 @@ svg.i{width:16px; height:16px; fill:none; stroke:currentColor; stroke-width:1.6;
 .ph{display:flex; justify-content:space-between; align-items:center; gap:10px}
 .more{font-size:12px; color:var(--mint); display:inline-flex; align-items:center; gap:3px}
 .more:hover{text-decoration:underline}
-.big{font-size:30px; font-weight:600; letter-spacing:-.035em; line-height:1.1; margin-top:8px; font-variant-numeric:tabular-nums}
-.big small{font-size:14px; font-weight:400; letter-spacing:0; color:var(--fg-2); margin-left:4px}
+.big{font-size:34px; font-weight:800; font-stretch:76%; letter-spacing:-.005em; line-height:1.05; margin-top:8px; font-variant-numeric:tabular-nums}
+.big small{font-size:14px; font-weight:400; font-stretch:100%; letter-spacing:0; color:var(--fg-2); margin-left:4px}
 .chg{display:inline-flex; align-items:center; gap:4px; font-size:12px; padding:3px 7px; border-radius:6px; font-variant-numeric:tabular-nums}
 .chg.good{background:color-mix(in srgb, var(--pos) 16%, transparent); color:var(--pos)}
 .chg.bad{background:color-mix(in srgb, var(--neg) 16%, transparent); color:var(--neg)}
@@ -124,6 +124,21 @@ svg.i{width:16px; height:16px; fill:none; stroke:currentColor; stroke-width:1.6;
 .sign .mark::before,.sign .mark::after{top:3px; width:3px; height:3px}
 .sign .mark::before{left:6px} .sign .mark::after{right:6px}
 
+/* Hero: pode gastar hoje */
+.spend .v{font-size:64px; font-weight:800; font-stretch:72%; letter-spacing:-.01em; line-height:.95; margin-top:10px; font-variant-numeric:tabular-nums}
+.spend .why{font-size:13px; color:var(--fg-2); margin-top:8px; max-width:40ch}
+.split{display:flex; height:10px; border-radius:5px; overflow:hidden; gap:2px; margin-top:18px}
+.split b{display:block; height:100%}
+.split-l{display:flex; justify-content:space-between; gap:8px; font-size:12px; color:var(--fg-3); margin-top:8px; flex-wrap:wrap}
+.split-l span{display:inline-flex; align-items:center; gap:6px}
+.split-l i{width:8px; height:8px; border-radius:2px; display:inline-block}
+.greet h1{font-size:22px !important}
+/* Month line */
+.ml .ev{font-size:10.5px; fill:var(--fg); font-weight:600}
+.ml .evi{fill:var(--pos)}
+
+.goals3{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:28px; margin-top:16px}
+.goals3 .row{border:0 !important; padding:0}
 /* Charts */
 .chart{position:relative; margin-top:12px}
 .chart svg{display:block; width:100%; height:auto; overflow:visible}
@@ -144,7 +159,7 @@ svg.i{width:16px; height:16px; fill:none; stroke:currentColor; stroke-width:1.6;
 .grow{flex:1; min-width:0}
 .t1{font-weight:500; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
 .t2{font-size:12px; color:var(--fg-3); white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
-.amt{font-weight:600; font-variant-numeric:tabular-nums; white-space:nowrap; text-align:right}
+.amt{font-weight:600; font-stretch:90%; font-variant-numeric:tabular-nums; white-space:nowrap; text-align:right}
 .bank{width:34px; height:34px; border-radius:9px; display:grid; place-items:center; color:#fff; font-weight:700; font-size:13px; letter-spacing:-.04em; flex:none}
 .bank.sm{width:18px; height:18px; border-radius:5px; font-size:8.5px; display:inline-grid}
 .bar{height:6px; border-radius:3px; background:var(--raise-2); overflow:hidden}
@@ -179,11 +194,13 @@ svg.i{width:16px; height:16px; fill:none; stroke:currentColor; stroke-width:1.6;
 .ruler i:hover{filter:brightness(1.2)}
 .group{border-top:1px solid var(--line)}
 .group:first-child{border-top:0}
-.gh{display:grid; grid-template-columns:20px 28px minmax(0,1fr) auto minmax(80px,140px); gap:12px; align-items:center; width:100%; padding:14px 20px; text-align:left}
+.gh{display:grid; grid-template-columns:20px 44px minmax(0,1fr) auto minmax(80px,140px); gap:12px; align-items:center; width:100%; padding:14px 20px; text-align:left}
 .gh:hover{background:var(--raise)}
 .gh .chev{color:var(--fg-3); transition:transform .15s}
 .group.open .gh .chev{transform:rotate(90deg)}
-.badge{width:26px; height:26px; border-radius:7px; display:grid; place-items:center; font-size:11.5px; font-weight:600; color:#fff}
+.badge{min-width:44px; height:26px; padding:0 6px; border-radius:7px; display:grid; place-items:center; font-size:12px; font-weight:800; font-stretch:72%; color:#fff; white-space:nowrap}
+.gh{position:relative; overflow:hidden}
+.gh .wmk{position:absolute; right:-6px; top:50%; transform:translateY(-50%); font-weight:800; font-stretch:62%; font-size:64px; line-height:1; color:var(--nc); opacity:.1; pointer-events:none}
 .gh .nm{font-weight:600; font-size:15px}
 .gh .pc{font-size:12px; color:var(--fg-3); font-weight:400; margin-left:8px}
 .subs{display:none; padding:0 20px 10px 54px}
@@ -286,13 +303,14 @@ svg.i{width:16px; height:16px; fill:none; stroke:currentColor; stroke-width:1.6;
   .main{padding:0 8px 90px}
   .bento{gap:10px}
   .p{padding:16px}
-  .greet h1{font-size:21px}
+  .greet h1{font-size:20px !important}
+  .spend .v{font-size:54px}
   .big{font-size:26px}
   .trio{grid-template-columns:1fr 1fr}
   .trio>div:last-child{grid-column:1/-1}
   .tx{grid-template-columns:minmax(0,1fr) auto; padding:11px 14px}
   .tx .cat{display:none}
-  .gh{grid-template-columns:16px 26px minmax(0,1fr) auto; padding:13px 14px; gap:10px}
+  .gh{grid-template-columns:16px 44px minmax(0,1fr) auto; padding:13px 14px; gap:10px}
   .gh .bar{display:none}
   .gh .pc{display:none}
   .subs{padding:0 14px 10px 40px}
@@ -303,11 +321,12 @@ svg.i{width:16px; height:16px; fill:none; stroke:currentColor; stroke-width:1.6;
   .ask kbd{display:none}
   .drawer{width:100%; border-left:0}
   .tbl .hide-s{display:none}
+  .goals3{grid-template-columns:1fr; gap:18px}
 }
 </style>
 
 <div class="protobar">
-  <span>Protótipo v0.2 · dados de exemplo</span>
+  <span>Protótipo v0.3 · dados de exemplo</span>
   <div class="seg" role="group" aria-label="Visualização">
     <button id="v-desk" aria-pressed="true">Desktop</button>
     <button id="v-phone" aria-pressed="false">Celular</button>
@@ -327,24 +346,43 @@ svg.i{width:16px; height:16px; fill:none; stroke:currentColor; stroke-width:1.6;
     <!-- VISÃO GERAL -->
     <section class="screen" id="s-home" aria-label="Visão geral">
       <div class="bento">
+        <article class="p s5 spend">
+          <div class="ph"><span class="lbl">Pode gastar hoje</span><button class="more" data-ask="Quanto posso gastar por dia até o fim do mês?">como calculei ↗</button></div>
+          <div class="v">R$ 333,91</div>
+          <p class="why">Por dia, até 30/09, e você ainda guarda os R$ 3.000 da meta. Já descontei contas fixas e parcelas.</p>
+          <div class="split" role="img" aria-label="Renda de setembro: 70% gasto, 24% meta de poupança, 6% livre">
+            <b style="flex:8732.18; background:var(--fg-3)"></b><b style="flex:3000; background:var(--mint-dim); outline:1px solid var(--mint); outline-offset:-1px"></b><b style="flex:667.82; background:var(--mint)"></b>
+          </div>
+          <div class="split-l"><span><i style="background:var(--fg-3)"></i>Gasto R$ 8.732</span><span><i style="background:var(--mint-dim); outline:1px solid var(--mint)"></i>Meta R$ 3.000</span><span><i style="background:var(--mint)"></i>Livre R$ 668</span></div>
+          <div class="foot" style="margin-top:auto; padding-top:14px"><span>Renda de setembro</span><b class="n" style="color:var(--fg)">R$ 12.400,00</b></div>
+        </article>
+
         <article class="p s7 greet">
           <h1>Setembro tá fechando no azul, Gabriel.</h1>
           <p class="lede">Você gastou <span class="n">R$ 579,82</span> a menos que em agosto até o dia 28. Separei três coisas que vale a pena olhar:</p>
           <ul class="notes" id="notes"></ul>
-          <div class="trio">
-            <div><div class="k">Gasto em setembro</div><div class="v">R$ 8.732,18</div></div>
-            <div><div class="k">vs. agosto</div><div class="v pos">−6,2%</div></div>
-            <div><div class="k">Maior gasto</div><div class="v">Aluguel · R$ 2.200</div></div>
-          </div>
-          <div class="sign"><span><span class="mark">ll</span>liu liu</span><span>28 set 2026, 09:42</span></div>
+          <div class="sign" style="margin-top:auto"><span><span class="mark">ll</span>liu liu</span><span>28 set 2026, 09:42</span></div>
         </article>
 
-        <article class="p s5">
+        <article class="p s12 ml">
+          <div class="ph"><span class="lbl">Linha do mês</span><span class="faint" style="font-size:12px">cada barra é um dia, na cor da categoria em que você mais gastou</span></div>
+          <div class="chart" id="ch-month"></div>
+          <div class="legend" id="month-legend"></div>
+        </article>
+
+        <article class="p s6">
           <div class="ph"><span class="lbl">Ritmo de gastos</span><button class="more" data-nav="cats">ver categorias ↗</button></div>
           <div class="big">R$ 579,82 <small>abaixo</small></div>
           <div style="display:flex; gap:8px; align-items:center; margin-top:8px; font-size:12px; color:var(--fg-2)"><span class="chg good">↘ 6,2%</span>vs. R$ 9.312,00 no mesmo dia de agosto</div>
           <div class="chart" id="ch-pace"></div>
           <div class="legend"><span><i class="ln"></i>Setembro</span><span><i class="ln dash"></i>Agosto</span></div>
+        </article>
+
+        <article class="p s6">
+          <div class="ph"><span class="lbl">Mapa de calor</span><span class="scale">menos <i style="background:var(--raise)"></i><i style="background:color-mix(in srgb,var(--mint) 25%,var(--raise))"></i><i style="background:color-mix(in srgb,var(--mint) 50%,var(--raise))"></i><i style="background:color-mix(in srgb,var(--mint) 75%,var(--raise))"></i><i style="background:var(--mint)"></i> mais</span></div>
+          <div class="big">R$ 311,86 <small>por dia, em média</small></div>
+          <div style="font-size:12.5px; color:var(--fg-2); margin-top:4px" id="heat-note"></div>
+          <div class="chart" id="heat" style="margin-top:4px"></div>
         </article>
 
         <article class="p s6">
@@ -362,30 +400,22 @@ svg.i{width:16px; height:16px; fill:none; stroke:currentColor; stroke-width:1.6;
           <div class="foot"><span>2 cartões</span><span>Próxima fatura: 10 out</span></div>
         </article>
 
-        <article class="p s5">
-          <div class="ph"><span class="lbl">Mapa de calor</span><span class="scale">menos <i style="background:var(--raise)"></i><i style="background:color-mix(in srgb,var(--mint) 25%,var(--raise))"></i><i style="background:color-mix(in srgb,var(--mint) 50%,var(--raise))"></i><i style="background:color-mix(in srgb,var(--mint) 75%,var(--raise))"></i><i style="background:var(--mint)"></i> mais</span></div>
-          <div class="big">R$ 311,86 <small>por dia, em média</small></div>
-          <div style="font-size:12.5px; color:var(--fg-2); margin-top:4px" id="heat-note"></div>
-          <div class="chart" id="heat" style="margin-top:4px"></div>
-        </article>
-
         <article class="p s7">
           <div class="ph"><span class="lbl">Principais categorias</span><button class="more" data-nav="cats">ver todas ↗</button></div>
           <div class="wrapx"><table class="tbl" id="topcats"></table></div>
         </article>
 
-        <article class="p s6">
-          <div class="ph"><span class="lbl">Metas</span><button class="more" data-ask="Crie uma meta de R$ 10 mil para viagem até junho">+ nova meta</button></div>
-          <div class="rows" id="goals"></div>
-        </article>
-
-        <article class="p s6">
+        <article class="p s5">
           <div class="ph"><span class="lbl">Próximos 14 dias</span><span class="faint" style="font-size:12px">R$ 6.661,23 a sair</span></div>
           <div class="rows" id="due"></div>
         </article>
+
+        <article class="p s12">
+          <div class="ph"><span class="lbl">Metas</span><button class="more" data-ask="Crie uma meta de R$ 10 mil para viagem até junho">+ nova meta</button></div>
+          <div class="goals3" id="goals"></div>
+        </article>
       </div>
     </section>
-
     <!-- TRANSAÇÕES -->
     <section class="screen" id="s-tx" aria-label="Transações">
       <div class="screen-h">
@@ -476,15 +506,13 @@ const BANKS = { nu:{n:'Nubank',c:'#820ad1',s:'nu'}, itau:{n:'Itaú',c:'#ec7000',
 
 /* Category tree — color follows the group everywhere */
 const GROUPS = [
-  {k:'moradia', n:'Moradia', c:'--c-moradia', prev:2850, subs:[['Aluguel',2200],['Condomínio',480],['Energia elétrica',170]]},
-  {k:'alim', n:'Alimentação', c:'--c-alim', prev:1587, subs:[['Supermercado',856.5],['Delivery',412.8],['Restaurantes e bares',247.2],['Padaria',123.5]]},
-  {k:'compras', n:'Compras', c:'--c-compras', prev:1480, subs:[['Compras online',689.9],['Roupas e calçados',430.1]]},
-  {k:'transp', n:'Transporte', c:'--c-transp', prev:690, subs:[['Combustível',460],['Apps de transporte',222],['Estacionamento',38]]},
-  {k:'edu', n:'Educação', c:'--c-edu', prev:590, subs:[['Curso de inglês',590]]},
-  {k:'outros', n:'Outros', c:'--c-outros', prev:1018.3, subs:[['Presentes',350],['Pix sem categoria',200],['Tarifas e IOF',32.48]]},
-  {k:'lazer', n:'Lazer', c:'--c-lazer', prev:610, subs:[['Viagens e passeios',318],['Cinema e shows',212]]},
-  {k:'saude', n:'Saúde', c:'--c-saude', prev:380, subs:[['Academia',249.1],['Farmácia',160.9]]},
-  {k:'assin', n:'Assinaturas', c:'--c-assin', prev:289.7, subs:[['Streaming e música',173.4],['Apps e software',116.3]]},
+  {k:'moradia', n:'Moradia', note:'100', c:'--c-moradia', prev:2850, subs:[['Aluguel',2200],['Condomínio',480],['Energia elétrica',170]]},
+  {k:'alim', n:'Alimentação', note:'10', c:'--c-alim', prev:1587, subs:[['Supermercado',856.5],['Delivery',412.8],['Restaurantes e bares',247.2],['Padaria',123.5]]},
+  {k:'compras', n:'Compras', note:'20', c:'--c-compras', prev:1480, subs:[['Compras online',689.9],['Roupas e calçados',430.1]]},
+  {k:'saude', n:'Saúde e educação', note:'2', c:'--c-saude', prev:970, subs:[['Curso de inglês',590],['Academia',249.1],['Farmácia',160.9]]},
+  {k:'lazer', n:'Lazer e assinaturas', note:'50', c:'--c-lazer', prev:899.7, subs:[['Viagens e passeios',318],['Cinema e shows',212],['Streaming e música',173.4],['Apps e software',116.3]]},
+  {k:'transp', n:'Transporte', note:'5', c:'--c-transp', prev:690, subs:[['Combustível',460],['Apps de transporte',222],['Estacionamento',38]]},
+  {k:'outros', n:'Outros', note:'', c:'--c-outros', prev:1018.3, subs:[['Presentes',350],['Pix sem categoria',200],['Tarifas e IOF',32.48]]},
 ];
 GROUPS.forEach(g=>g.total = Math.round(g.subs.reduce((s,x)=>s+x[1],0)*100)/100);
 const TOTAL = 8732.18;
@@ -540,6 +568,37 @@ const NOTES = [
   ['Sobram R$ 667,82 livres até o fim do mês se você mantiver a meta de guardar R$ 3.000.','Quanto posso gastar por dia até o fim do mês?'],
 ];
 $('notes').innerHTML = NOTES.map(([t,q])=>`<li><button data-ask="${q}"><i></i><span>${t}</span><span class="go">perguntar →</span></button></li>`).join('');
+
+/* ---------- Home: month line ---------- */
+(function monthLine(el){
+  const first = new Date(2026,8,1).getDay(), r = rnd(3);
+  const fixedCat = {3:'lazer', 6:'moradia', 10:'saude', 15:'compras', 20:'compras'};
+  const pool = ['alim','alim','alim','transp','compras','lazer','outros','alim','transp','saude'];
+  const cat = d => fixedCat[d] || (((first+d-1)%7)===5 ? 'alim' : pool[Math.floor(r(d)*pool.length)]);
+  const W=1100, H=206, L=6, R=6, base=150, cap=700, topY=40, step=(W-L-R)/30, bw=step-8;
+  const y = v => base - Math.min(v,cap)/cap*(base-topY);
+  const evIn = {5:'salário + R$ 11.200', 18:'freela + R$ 1.200'};
+  const evOut = {6:['aluguel',0], 10:['fatura Nubank',0], 12:['fatura Itaú',13]};
+  let g = `<line class="gl" x1="${L}" x2="${W-R}" y1="${base}" y2="${base}"/>`;
+  for(let d=1; d<=30; d++){
+    const x = L+(d-1)*step+4, cx = x+bw/2;
+    if(d>28){ g += `<rect x="${x}" y="${base-14}" width="${bw}" height="14" rx="3" fill="none" stroke="var(--line-2)" stroke-dasharray="3 3"/>`; }
+    else {
+      const v = SEP[d-1], c = G(cat(d)), yy = y(v), over = v>cap;
+      g += `<path d="M${x},${base}V${yy+3}q0,-3 3,-3h${bw-6}q3,0 3,3V${base}Z" fill="var(${c.c})" data-t="${String(d).padStart(2,'0')}/09 · <b>${BRL(v)}</b><br>mais em ${c.n}"/>`;
+      if(over) g += `<path d="M${x-1},${yy+12}l${bw+2},-5v5l-${bw+2},5z" fill="var(--panel)"/><text class="ax" x="${cx}" y="${yy-5}" text-anchor="middle" style="fill:var(--fg-2)">${BRLk(v)}</text>`;
+    }
+    if(evIn[d]) g += `<path d="M${cx},8l5,7h-10z" class="evi"/><text class="ev" x="${cx+8}" y="16" style="fill:var(--pos)">${evIn[d]}</text><line x1="${cx}" x2="${cx}" y1="18" y2="${base}" stroke="var(--pos)" stroke-dasharray="2 4" opacity=".6"/>`;
+    if(evOut[d]) g += `<text class="ax" x="${cx}" y="${base+30+evOut[d][1]}" text-anchor="middle" style="fill:var(--fg-2)">${evOut[d][0]}</text><line x1="${cx}" x2="${cx}" y1="${base+4}" y2="${base+20+evOut[d][1]}" stroke="var(--fg-3)"/>`;
+    if([1,8,15,22,28].includes(d)) g += `<text class="ax" x="${cx}" y="${base+14}" text-anchor="middle">${d===28?'hoje':d}</text>`;
+  }
+  el.innerHTML = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Gasto por dia em setembro, com salário no dia 5, aluguel no dia 6 e faturas nos dias 10 e 12">${g}</svg><div class="tip" hidden></div>`;
+  const s=el.querySelector('svg'), tip=el.querySelector('.tip');
+  s.addEventListener('pointerover', e=>{ const p=e.target.closest('[data-t]'); if(!p){tip.hidden=true;return}
+    const rr=el.getBoundingClientRect(), b=p.getBoundingClientRect(); tip.hidden=false; tip.innerHTML=p.dataset.t; tip.style.left=(b.left-rr.left+b.width/2)+'px'; tip.style.top=(b.top-rr.top)+'px'; });
+  s.addEventListener('pointerleave', ()=>tip.hidden=true);
+  $('month-legend').innerHTML = GROUPS.map(g=>`<span><i class="sq" style="background:${col(g)}"></i>${g.n}${g.note?` <span class="faint">· nota de R$ ${g.note}</span>`:''}</span>`).join('');
+})($('ch-month'));
 
 /* ---------- Home: pace chart ---------- */
 (function pace(el){
@@ -630,8 +689,8 @@ $('due').innerHTML = [
 /* ---------- Transactions ---------- */
 const TX = [
   ['Hoje · domingo, 28 set', [['Estacionamento Centro','transp','Estacionamento','cash',-38,'chat'],['Padaria Real','alim','Padaria','nu',-23.5],['Uber','transp','Apps de transporte','nu',-27.9]]],
-  ['Sábado, 27 set', [['iFood','alim','Delivery','nu',-64.9],['Pão de Açúcar','alim','Supermercado','itau',-312.47],['Pix de Ana Souza','in','Recebido','nu',150],['Spotify','assin','Streaming e música','nu',-21.9]]],
-  ['Sexta, 26 set', [['iFood','alim','Delivery','nu',-89.4],['Netflix','assin','Streaming e música','itau',-44.9],['Posto Shell','transp','Combustível','itau',-230],['Drogasil','saude','Farmácia','nu',-86.4],['Cinemark','lazer','Cinema e shows','nu',-72]]],
+  ['Sábado, 27 set', [['iFood','alim','Delivery','nu',-64.9],['Pão de Açúcar','alim','Supermercado','itau',-312.47],['Pix de Ana Souza','in','Recebido','nu',150],['Spotify','lazer','Streaming e música','nu',-21.9]]],
+  ['Sexta, 26 set', [['iFood','alim','Delivery','nu',-89.4],['Netflix','lazer','Streaming e música','itau',-44.9],['Posto Shell','transp','Combustível','itau',-230],['Drogasil','saude','Farmácia','nu',-86.4],['Cinemark','lazer','Cinema e shows','nu',-72]]],
   ['Quinta, 25 set', [['Rendimento CDB','in','Investimentos','inter',98.12],['Amazon','compras','Compras online','nu',-189.9],['IOF compra internacional','outros','Tarifas e IOF','nu',-4.02]]],
 ];
 const FIL=['Todas','Saídas','Entradas','Cartão Nubank','Cartão Itaú']; let fil='Todas', q='';
@@ -657,7 +716,7 @@ const INST = [
   {n:'iPhone 15', where:'Magazine Luiza', b:'nu', g:'compras', val:383.25, tot:12, cur:5, end:'abr/2027'},
   {n:'Passagens Lisboa', where:'LATAM', b:'nu', g:'lazer', val:512, tot:6, cur:2, end:'jan/2027'},
   {n:'Sofá retrátil', where:'Tok&Stok', b:'itau', g:'moradia', val:289.9, tot:10, cur:8, end:'nov/2026'},
-  {n:'Curso de fotografia', where:'Escola Panamericana', b:'itau', g:'edu', val:197, tot:4, cur:4, end:'set/2026'},
+  {n:'Curso de fotografia', where:'Escola Panamericana', b:'itau', g:'saude', val:197, tot:4, cur:4, end:'set/2026'},
 ];
 (function instChart(el){
   const months=['out','nov','dez','jan','fev','mar','abr','mai'];
@@ -696,8 +755,8 @@ $('insts').innerHTML = INST.map(p=>{ const B=BANKS[p.b], left=(p.tot-p.cur)*p.va
   w.addEventListener('pointerleave', ()=>tip.hidden=true);
   $('groups').innerHTML = sorted.map((g,i)=>`<div class="group ${i<3?'open':''}">
     <button class="gh" aria-expanded="${i<3}"><svg class="i chev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg>
-      <span class="badge" style="background:${col(g)}">${g.subs.length}</span>
-      <span class="nm">${g.n}<span class="pc">${(g.total/TOTAL*100).toFixed(1).replace('.',',')}%</span></span>
+      <span class="badge" style="background:${col(g)}">${g.note?"R$ "+g.note:"···"}</span>
+      <span class="nm">${g.n}<span class="pc">${g.subs.length} subcategorias · ${(g.total/TOTAL*100).toFixed(1).replace('.',',')}%</span></span>
       <span class="amt" style="font-size:15px">${BRL(g.total)}</span>
       <span class="bar"><i style="width:${g.total/mx*100}%; background:${col(g)}"></i></span></button>
     <div class="subs">${g.subs.slice().sort((a,b)=>b[1]-a[1]).map(([n,v])=>`<div class="sub"><span class="t1" style="font-weight:400">${n}</span><span class="amt">${BRL(v)}</span><span class="bar"><i style="width:${v/g.total*100}%; background:color-mix(in srgb, ${col(g)} 70%, transparent)"></i></span></div>`).join('')}</div></div>`).join('');
@@ -756,7 +815,7 @@ const REPLIES = {
 };
 msgs.innerHTML = [
   `<div class="when">hoje, 28 set</div>`,
-  bot(`<p>Bom dia, Gabriel. Ontem saíram <b class="n">R$ 399,27</b> em 3 compras:</p><div class="box">${crow('Pão de Açúcar','alim',312.47)}${crow('iFood','alim',64.9)}${crow('Spotify','assin',21.9)}</div>`,'08:02'),
+  bot(`<p>Bom dia, Gabriel. Ontem saíram <b class="n">R$ 399,27</b> em 3 compras:</p><div class="box">${crow('Pão de Açúcar','alim',312.47)}${crow('iFood','alim',64.9)}${crow('Spotify','lazer',21.9)}</div>`,'08:02'),
   me('gastei 38 no estacionamento, paguei em dinheiro','11:40'),
   bot(`<p>Anotei.</p><div class="box"><div class="row" style="padding:2px 0"><i class="cdot" style="background:var(--c-transp)"></i><div class="grow"><div class="t1">Estacionamento</div><div class="t2">Transporte · Dinheiro · hoje</div></div><span class="amt">− R$ 38,00</span></div>
     <div style="display:flex;gap:6px;margin-top:8px"><button class="btn" style="padding:4px 10px;font-size:12px">Editar</button><button class="btn" style="padding:4px 10px;font-size:12px">Desfazer</button></div></div>`,'11:40'),
