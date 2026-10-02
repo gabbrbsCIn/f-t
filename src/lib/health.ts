@@ -1,3 +1,4 @@
+import { createHash } from "node:crypto";
 import { databaseUrl, getDb } from "./db";
 
 /** What is configured (yes/no only, never values) and whether the database answers. */
@@ -23,5 +24,7 @@ export async function health() {
     const msg = (err.message ?? String(e)).replace(/postgres(ql)?:\/\/\S+/gi, "[url]").replace(/[\w.-]+\.(neon\.tech|supabase\.co|vercel-storage\.com)/gi, "[host]");
     database = { ok: false, error: `${err.code ? `${err.code}: ` : ""}${msg}`.slice(0, 240) };
   }
-  return { ok: database.ok && env.APP_PASSWORD, env, database };
+  // Short hash of the client ID: enough to tell two Pluggy applications apart, reveals nothing.
+  const pluggyApp = process.env.PLUGGY_CLIENT_ID ? createHash("sha256").update(process.env.PLUGGY_CLIENT_ID.trim()).digest("hex").slice(0, 8) : null;
+  return { ok: database.ok && env.APP_PASSWORD, env, database, pluggyApp };
 }
