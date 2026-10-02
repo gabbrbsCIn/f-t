@@ -2,6 +2,7 @@ import type { Account, Transaction } from "pluggy-sdk";
 import { categorize, type Rule } from "./categorize";
 import { addDays, isoDay, today } from "./dates";
 import { getDb, insertMany, type Db } from "./db";
+import { resolveInstitutions } from "./institutions";
 import { pluggy } from "./pluggy";
 
 const FIRST_SYNC_DAYS = 365;
@@ -9,8 +10,15 @@ const OVERLAP_DAYS = 10;
 
 export type SyncResult = { items: number; accounts: number; transactions: number; errors: string[] };
 
+/** Items listed in PLUGGY_ITEM_IDS (comma-separated), e.g. connected from the Pluggy dashboard. */
+export async function registerEnvItems(db: Db) {
+  const ids = (process.env.PLUGGY_ITEM_IDS ?? "").split(/[\s,;]+/).map((s) => s.trim()).filter((s) => /^[\w-]{8,64}$/.test(s));
+  for (const id of ids) await db.query("INSERT INTO items (id) VALUES ($1) ON CONFLICT (id) DO NOTHING", [id]);
+}
+
 export async function syncAll(): Promise<SyncResult> {
   const db = await getDb();
+  await registerEnvItems(db);
   const items = await db.query<{ id: string }>("SELECT id FROM items");
   const res: SyncResult = { items: 0, accounts: 0, transactions: 0, errors: [] };
   for (const { id } of items) {
@@ -45,8 +53,10 @@ export async function syncItem(itemId: string, dbIn?: Db) {
   const from = prev?.last_synced_at ? addDays(prev.last_synced_at.slice(0, 10), -OVERLAP_DAYS) : addDays(today(), -FIRST_SYNC_DAYS);
   let txCount = 0;
 
+  const inst = resolveInstitutions(accounts, item.connector);
   for (const acc of accounts) {
-    await upsertAccount(db, acc, item.connector.name, item.connector.primaryColor);
+    const bank = inst.get(acc.id)!;
+    await upsertAccount(db, acc, bank.name, bank.color);
     const txs = await api.fetchAllTransactions(acc.id, { dateFrom: from });
     await upsertTransactions(db, acc, txs, rules);
     txCount += txs.length;

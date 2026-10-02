@@ -4,6 +4,7 @@ import { MonthSwitch } from "@/components/MonthSwitch";
 import { SavingsGoalForm } from "@/components/SavingsGoalForm";
 import { Mark } from "@/components/Wordmark";
 import { BankTile } from "@/components/BankTile";
+import { ItemIdForm } from "@/components/ItemIdForm";
 import { group } from "@/lib/categories";
 import { addMonths, dayShort, monthName, monthShort, today, validYm, weekday, ymOf } from "@/lib/dates";
 import { BRL } from "@/lib/format";
@@ -225,7 +226,10 @@ function Welcome({ configured }: { configured: boolean }) {
       <h2>Vamos conectar seus bancos</h2>
       <p>O liu liu lê suas contas e cartões pelo Open Finance, com acesso só de leitura. Escolha <b>MeuPluggy</b> na janela que abrir para trazer os bancos que você já conectou lá.</p>
       {configured ? (
-        <ConnectButton className="btn pri">Conectar banco</ConnectButton>
+        <>
+          <ConnectButton className="btn pri">Conectar banco</ConnectButton>
+          <ItemIdForm />
+        </>
       ) : (
         <p className="err">Falta configurar PLUGGY_CLIENT_ID e PLUGGY_CLIENT_SECRET nas variáveis de ambiente.</p>
       )}

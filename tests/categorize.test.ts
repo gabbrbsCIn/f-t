@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { baseDescription, categorize } from "@/lib/categorize";
+import { resolveInstitutions } from "@/lib/institutions";
 
 const out = (description: string, pluggyCategory: string | null = null, accountType: "BANK" | "CREDIT" = "CREDIT") =>
   categorize({ description, pluggyCategory, direction: "out", accountType });
@@ -49,5 +50,24 @@ describe("baseDescription", () => {
   it("removes installment markers", () => {
     expect(baseDescription("AMAZON PARC 05/12")).toBe("amazon");
     expect(baseDescription("Magalu Parcela 3 de 10")).toBe("magalu");
+  });
+});
+
+
+describe("resolveInstitutions", () => {
+  it("names the bank behind MeuPluggy and gives the card the same bank", () => {
+    const m = resolveInstitutions(
+      [
+        { id: "a", type: "BANK", name: "Nu Pagamentos S.A. - Instituição de Pagamento", marketingName: null },
+        { id: "c", type: "CREDIT", name: "platinum", marketingName: null },
+      ],
+      { name: "MeuPluggy", primaryColor: "ef294b" },
+    );
+    expect(m.get("a")).toMatchObject({ name: "Nubank" });
+    expect(m.get("c")).toMatchObject({ name: "Nubank" });
+  });
+  it("keeps the connector when nothing is recognizable", () => {
+    const m = resolveInstitutions([{ id: "x", type: "CREDIT", name: "gold", marketingName: null }], { name: "MeuPluggy", primaryColor: "ef294b" });
+    expect(m.get("x")).toMatchObject({ name: "MeuPluggy", color: "#ef294b" });
   });
 });

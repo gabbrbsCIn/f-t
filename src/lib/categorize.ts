@@ -57,6 +57,7 @@ const SPEND: [RegExp, GroupKey, string][] = [
   [/escola|curso|faculdade|universidade|education|educacao|udemy|alura|ingles|livraria|books/, "saude", "Educação"],
   [/netflix|spotify|disney|hbo|\bmax\b|prime video|youtube|deezer|globoplay|paramount|streaming|apple music|crunchyroll/, "lazer", "Streaming e música"],
   [/apple\.com|icloud|google one|google storage|microsoft|adobe|notion|software|digital services|app store|google play|openai|anthropic|claude\.ai|chatgpt/, "lazer", "Apps e software"],
+  [/gambling|aposta|\bbet|betano|bet365|blaze|loteria|lottery/, "lazer", "Apostas"],
   [/cinema|cinemark|\bshow|ingresso|sympla|eventim|entertainment|lazer|leisure|\bgame|steam|playstation|xbox/, "lazer", "Cinema e shows"],
   [/viage|travel|hotel|airbnb|booking|latam|voegol|gol linhas|azul linhas|voeazul|airline|airport|accommodation|decolar|\btrip/, "lazer", "Viagens e passeios"],
   [/amazon|mercado ?livre|shopee|aliexpress|magalu|magazine luiza|online shopping|e-commerce|shein|americanas/, "compras", "Compras online"],
