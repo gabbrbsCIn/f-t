@@ -1,0 +1,344 @@
+<title>Liu Liu — Direções visuais</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&family=Instrument+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Caveat:wght@500;700&family=Archivo:wdth,wght@62..125,400;62..125,600;62..125,800&family=Onest:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Schibsted+Grotesk:wght@400;500;700;800&display=swap">
+<style>
+/* Layout: a single reading column of four direction blocks; each block = text + palette on one side, a live mini-mock in its own committed palette on the other. */
+:root{
+  --bg:#f5f6f5; --fg:#111413; --fg-2:#505855; --fg-3:#8a918e; --line:#dfe3e1; --card:#ffffff; --accent:#0c9a70;
+  --f-ui:"Geist", system-ui, -apple-system, "Segoe UI", sans-serif; --f-num:"Geist Mono", ui-monospace, monospace;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){ --bg:#0b0c0d; --fg:#eef1f0; --fg-2:#a4aba8; --fg-3:#6b7270; --line:#222628; --card:#111314; --accent:#3dd6a3; color-scheme:dark } }
+:root[data-theme="dark"]{ --bg:#0b0c0d; --fg:#eef1f0; --fg-2:#a4aba8; --fg-3:#6b7270; --line:#222628; --card:#111314; --accent:#3dd6a3; color-scheme:dark }
+*{box-sizing:border-box}
+body{background:var(--bg); color:var(--fg); font-family:var(--f-ui); font-size:15px; line-height:1.55; margin:0; padding-inline:16px; padding-block:40px 64px}
+.wrap{max-width:1120px; margin:0 auto}
+header{max-width:720px; margin-bottom:40px}
+.kick{font-size:12.5px; color:var(--fg-3); letter-spacing:.06em; text-transform:uppercase}
+h1{font-size:clamp(28px,4vw,40px); letter-spacing:-.035em; line-height:1.1; margin:6px 0 12px; text-wrap:balance}
+header p{color:var(--fg-2); margin:0; max-width:62ch}
+.dir{display:grid; grid-template-columns:minmax(0,5fr) minmax(0,7fr); gap:32px; padding:36px 0; border-top:1px solid var(--line); align-items:start}
+.dir h2{font-size:24px; letter-spacing:-.03em; margin:2px 0 6px}
+.tag{display:inline-block; font-family:var(--f-num); font-size:12px; color:var(--fg-3)}
+.idea{color:var(--fg); margin:0 0 16px; font-size:16px}
+.dir h3{font-size:12px; letter-spacing:.07em; text-transform:uppercase; color:var(--fg-3); font-weight:500; margin:18px 0 8px}
+.dir ul{margin:0; padding-left:18px; color:var(--fg-2)} .dir li+li{margin-top:4px}
+.sw{display:grid; grid-template-columns:repeat(auto-fill,minmax(96px,1fr)); gap:8px}
+.sw div{border:1px solid var(--line); border-radius:8px; overflow:hidden; background:var(--card); font-size:11.5px}
+.sw i{display:block; height:38px}
+.sw span{display:block; padding:5px 8px 6px; line-height:1.3}
+.sw b{display:block; font-weight:500; color:var(--fg)} .sw code{font-family:var(--f-num); color:var(--fg-3); font-size:10.5px}
+.type{font-size:13px; color:var(--fg-2)}
+.mock{border-radius:14px; overflow:hidden; border:1px solid var(--line); min-width:0}
+.cap{font-size:12px; color:var(--fg-3); margin-top:8px}
+.cmp{width:100%; border-collapse:collapse; font-size:14px; margin-top:8px}
+.cmp th,.cmp td{text-align:left; padding:10px 12px 10px 0; border-top:1px solid var(--line); vertical-align:top}
+.cmp th{font-weight:500; color:var(--fg-3); font-size:12px; border-top:0}
+.tblw{overflow-x:auto}
+.rec{margin-top:40px; padding:22px 24px; border:1px solid var(--line); border-radius:14px; background:var(--card); max-width:760px}
+.rec h2{margin:0 0 8px; font-size:20px; letter-spacing:-.02em}
+.rec p{margin:0; color:var(--fg-2)} .rec p+p{margin-top:10px}
+@media (max-width:860px){ .dir{grid-template-columns:1fr; gap:20px} }
+
+/* ===== A · Caderninho ===== */
+.dA{--p:#f7f7f2; --ruled:#d9dcea; --ink:#1c2b6e; --lead:#4a4f5c; --hl:#f2e14c; --red:#cf3f2b;
+  background:var(--p); color:var(--ink); font-family:"Instrument Sans",system-ui,sans-serif; padding:22px 24px 24px;
+  background-image:repeating-linear-gradient(to bottom, transparent 0 31px, var(--ruled) 31px 32px); background-position:0 10px; position:relative}
+.dA::before{content:""; position:absolute; top:0; bottom:0; left:58px; border-left:1.5px solid #e9a3a0}
+.dA .in{padding-left:52px}
+.dA .date{font-size:12px; letter-spacing:.08em; text-transform:uppercase; color:var(--lead); line-height:32px}
+.dA .bal{font-size:34px; font-weight:700; letter-spacing:-.03em; line-height:32px; margin:0 0 0}
+.dA .bal small{font-size:13px; font-weight:500; color:var(--lead); letter-spacing:0}
+.dA .led{font-family:"JetBrains Mono",monospace; font-size:13px; margin-top:32px}
+.dA .led div{display:flex; gap:8px; line-height:32px; white-space:nowrap}
+.dA .led span:nth-child(2){flex:1; overflow:hidden; color:var(--ruled); letter-spacing:2px}
+.dA .led span:nth-child(2)::before{content:"··································································"; color:#9aa0b8}
+.dA .neg{color:var(--red)}
+.dA mark{background:linear-gradient(transparent 35%, var(--hl) 35% 85%, transparent 85%); color:inherit; padding:0 2px}
+.dA .note{font-family:"Caveat",cursive; font-size:21px; color:var(--red); line-height:32px; transform:rotate(-1.5deg); transform-origin:left}
+.dA .note.blue{color:#2a50c8}
+.dA .q{margin-top:6px; line-height:32px; font-size:13.5px; color:var(--lead)}
+.dA .q b{color:var(--ink)}
+
+/* ===== B · Cédulas ===== */
+.dB{--bg:#0e1620; --s:#16212d; --s2:#1d2a38; --t:#eef2f5; --t2:#9fb0be; --t3:#647686;
+  --n100:#2a8fb3; --n10:#d9534f; --n5:#9a6fc2; --n20:#b98a10; --n50:#b8702f; --n2:#5b7fc0; --ok:#5fd39a;
+  background:var(--bg); color:var(--t); font-family:"Archivo",system-ui,sans-serif; padding:20px}
+.dB .top{display:flex; justify-content:space-between; align-items:baseline; gap:10px; flex-wrap:wrap}
+.dB .lbl{font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--t3)}
+.dB .huge{font-stretch:75%; font-weight:800; font-size:44px; letter-spacing:-.01em; line-height:1}
+.dB .huge small{font-stretch:100%; font-size:13px; font-weight:400; color:var(--t2); margin-left:6px}
+.dB .tl{margin-top:16px; background:var(--s); border-radius:12px; padding:14px 14px 10px}
+.dB .tl svg{display:block; width:100%; height:auto}
+.dB .tl text{font-family:"Archivo"; font-size:9.5px; fill:var(--t3)}
+.dB .tl .ev{fill:var(--t); font-size:10px; font-weight:600}
+.dB .cards{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; margin-top:10px}
+.dB .c{background:var(--s); border-radius:10px; padding:10px 12px; min-width:0; position:relative; overflow:hidden}
+.dB .c::after{content:attr(data-n); position:absolute; right:-4px; bottom:-14px; font-stretch:62%; font-weight:800; font-size:54px; color:var(--nc); opacity:.22; line-height:1}
+.dB .c .nm{font-size:12px; color:var(--t2); display:flex; align-items:center; gap:6px}
+.dB .c .nm i{width:8px; height:8px; border-radius:2px; background:var(--nc)}
+.dB .c .v{font-stretch:80%; font-weight:600; font-size:20px; margin-top:2px}
+.dB .c .bar{height:4px; border-radius:2px; background:var(--s2); margin-top:8px; overflow:hidden}
+.dB .c .bar b{display:block; height:100%; background:var(--nc); border-radius:2px}
+
+/* ===== C · Conversa no centro ===== */
+.dC{--bg:#17121c; --s:#211a28; --s2:#2b2333; --t:#f3eef6; --t2:#b3a8bd; --t3:#7a6f85; --lil:#c4a7ff; --peach:#ffb59a; --ok:#8fe3b0;
+  background:var(--bg); color:var(--t); font-family:"Onest",system-ui,sans-serif; display:grid; grid-template-columns:44px minmax(0,1fr) minmax(0,190px); min-height:380px; font-size:13px}
+.dC .rail{border-right:1px solid var(--s2); display:flex; flex-direction:column; align-items:center; gap:14px; padding:14px 0}
+.dC .rail i{width:18px; height:18px; border-radius:5px; border:1.5px solid var(--t3)}
+.dC .rail i.on{border-color:var(--lil); background:color-mix(in srgb,var(--lil) 25%,transparent)}
+.dC .chat{padding:16px 16px 12px; display:flex; flex-direction:column; gap:10px; min-width:0}
+.dC .me{align-self:flex-end; background:var(--s2); border-radius:14px 14px 4px 14px; padding:8px 12px; max-width:85%}
+.dC .bot p{margin:0; line-height:1.5}
+.dC .ans{background:var(--s); border:1px solid var(--s2); border-radius:12px; padding:12px; margin-top:8px}
+.dC .ans .k{font-size:10.5px; color:var(--t3); letter-spacing:.06em; text-transform:uppercase}
+.dC .ans .v{font-size:24px; font-weight:600; letter-spacing:-.02em}
+.dC .pin{font-size:11.5px; color:var(--lil); margin-top:8px}
+.dC .comp{margin-top:auto; border:1px solid var(--s2); border-radius:12px; padding:9px 12px; color:var(--t3); display:flex; justify-content:space-between}
+.dC .comp b{width:22px; height:22px; border-radius:7px; background:var(--lil)}
+.dC .ctx{border-left:1px solid var(--s2); padding:14px 12px; display:flex; flex-direction:column; gap:10px; background:color-mix(in srgb,var(--s) 50%,var(--bg))}
+.dC .ctx .h{font-size:10.5px; color:var(--t3); letter-spacing:.08em; text-transform:uppercase}
+.dC .w{background:var(--s); border-radius:10px; padding:10px}
+.dC .w .k{font-size:11px; color:var(--t2)}
+.dC .w .v{font-size:16px; font-weight:600; margin-top:2px; font-family:"IBM Plex Mono",monospace; letter-spacing:-.02em}
+.dC .w svg{display:block; width:100%; height:auto; margin-top:6px}
+
+/* ===== D · Envelopes ===== */
+.dD{--bg:#eef1ec; --s:#ffffff; --forest:#1e3a2b; --f2:#4f6a5b; --f3:#8aa094; --mint:#6fd3a8; --kraft:#d8bd8f; --kraft2:#c9a574; --neg:#c2452d;
+  background:var(--bg); color:var(--forest); font-family:"Schibsted Grotesk",system-ui,sans-serif; padding:22px}
+.dD .hero{display:flex; justify-content:space-between; align-items:flex-end; gap:14px; flex-wrap:wrap}
+.dD .hero .k{font-size:13px; color:var(--f2)}
+.dD .hero .v{font-weight:800; font-size:48px; letter-spacing:-.045em; line-height:1}
+.dD .hero .sub{font-size:12.5px; color:var(--f2); margin-top:4px}
+.dD .meter{flex:1; min-width:160px; max-width:240px}
+.dD .meter .track{height:10px; border-radius:5px; background:#dfe6dd; overflow:hidden; display:flex}
+.dD .meter .track b{display:block; height:100%}
+.dD .meter .lg{display:flex; justify-content:space-between; font-size:11px; color:var(--f3); margin-top:5px}
+.dD .env{display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:10px; margin-top:20px}
+.dD .e{position:relative; background:var(--kraft); border-radius:6px; padding:34px 10px 10px; min-width:0; overflow:hidden}
+.dD .e::before{content:""; position:absolute; inset:0 0 auto 0; height:30px; background:var(--kraft2); clip-path:polygon(0 0,100% 0,50% 100%)}
+.dD .e .fill{position:absolute; left:0; right:0; bottom:0; background:color-mix(in srgb,var(--forest) 14%,transparent)}
+.dD .e .nm{position:relative; font-size:12px; font-weight:500}
+.dD .e .v{position:relative; font-weight:700; font-size:17px; letter-spacing:-.02em}
+.dD .e .s{position:relative; font-size:10.5px; color:var(--forest); opacity:.7}
+.dD .e.over{outline:2px solid var(--neg); outline-offset:-2px}
+.dD .e.over .v{color:var(--neg)}
+.dD .say{margin-top:14px; background:var(--s); border-radius:12px; padding:10px 12px; display:flex; gap:10px; align-items:center; font-size:13px}
+.dD .say b.av{width:24px; height:24px; border-radius:7px; background:var(--forest); flex:none}
+@media (max-width:520px){ .dD .env{grid-template-columns:repeat(2,minmax(0,1fr))} .dB .cards{grid-template-columns:1fr 1fr} .dC{grid-template-columns:36px minmax(0,1fr)} .dC .ctx{display:none} .dA::before{left:34px} .dA .in{padding-left:26px} }
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="kick">liu liu · design v0.3 · para escolher</div>
+    <h1>Quatro caminhos para o liu liu ter cara própria</h1>
+    <p>Cada direção muda a paleta e também o que aparece primeiro na tela. As visualizações que você aprovou (ritmo de gastos, mapa de calor, categorias, parcelamentos, cartões) continuam em todas. Dá para misturar: por exemplo, a paleta de uma com a organização de outra.</p>
+  </header>
+
+  <!-- A -->
+  <section class="dir">
+    <div>
+      <span class="tag">A</span>
+      <h2>Caderninho</h2>
+      <p class="idea">O caderno de contas da sua avó, só que ele faz as contas sozinho e escreve recados na margem.</p>
+      <h3>Paleta</h3>
+      <div class="sw">
+        <div><i style="background:#f7f7f2"></i><span><b>Papel</b><code>#F7F7F2</code></span></div>
+        <div><i style="background:#1c2b6e"></i><span><b>Tinta azul</b><code>#1C2B6E</code></span></div>
+        <div><i style="background:#f2e14c"></i><span><b>Marca-texto</b><code>#F2E14C</code></span></div>
+        <div><i style="background:#cf3f2b"></i><span><b>Caneta vermelha</b><code>#CF3F2B</code></span></div>
+        <div><i style="background:#d9dcea"></i><span><b>Pauta</b><code>#D9DCEA</code></span></div>
+      </div>
+      <h3>Organização</h3>
+      <ul>
+        <li>A tela inicial é o dia de hoje, escrito como um caderno: lançamentos com pontilhado até o valor.</li>
+        <li>O liu liu comenta na margem, com letra de mão em vermelho ou azul.</li>
+        <li>Rolando para cima, você volta para os dias anteriores. Os gráficos aparecem no meio das páginas, como colados no caderno.</li>
+      </ul>
+      <h3>Tipografia</h3>
+      <p class="type">Instrument Sans no texto, JetBrains Mono nos valores, Caveat só nos recados.</p>
+    </div>
+    <div>
+      <div class="mock dA" role="img" aria-label="Exemplo da direção Caderninho">
+        <div class="in">
+          <div class="date">domingo, 28 de setembro</div>
+          <div class="bal">R$ 13.318,52 <small>nas contas</small></div>
+          <div class="led">
+            <div><span>Pão de Açúcar</span><span></span><span class="neg">− 312,47</span></div>
+            <div><span>iFood</span><span></span><span class="neg">− <mark>64,90</mark></span></div>
+            <div><span>Pix de Ana Souza</span><span></span><span>+ 150,00</span></div>
+            <div><span>Estacionamento</span><span></span><span class="neg">− 38,00</span></div>
+          </div>
+          <div class="note">delivery de novo? 3ª sexta seguida…</div>
+          <div class="note blue">mas o mês fecha R$ 579 abaixo de agosto :)</div>
+          <div class="q">sobram <b>R$ 333,91 por dia</b> até o dia 30</div>
+        </div>
+      </div>
+      <div class="cap">Claro por padrão, com versão escura em “papel de pão” cinza-azulado.</div>
+    </div>
+  </section>
+
+  <!-- B -->
+  <section class="dir">
+    <div>
+      <span class="tag">B</span>
+      <h2>Cédulas</h2>
+      <p class="idea">Cada categoria ganha a cor de uma nota do Real. Moradia é azul como a de R$ 100, comer fora é vermelho como a de R$ 10.</p>
+      <h3>Paleta</h3>
+      <div class="sw">
+        <div><i style="background:#0e1620"></i><span><b>Fundo noite</b><code>#0E1620</code></span></div>
+        <div><i style="background:#2a8fb3"></i><span><b>R$ 100 · garoupa</b><code>#2A8FB3</code></span></div>
+        <div><i style="background:#d9534f"></i><span><b>R$ 10 · arara</b><code>#D9534F</code></span></div>
+        <div><i style="background:#9a6fc2"></i><span><b>R$ 5 · garça</b><code>#9A6FC2</code></span></div>
+        <div><i style="background:#b98a10"></i><span><b>R$ 20 · mico</b><code>#B98A10</code></span></div>
+        <div><i style="background:#b8702f"></i><span><b>R$ 50 · onça</b><code>#B8702F</code></span></div>
+        <div><i style="background:#5b7fc0"></i><span><b>R$ 2 · tartaruga</b><code>#5B7FC0</code></span></div>
+      </div>
+      <h3>Organização</h3>
+      <ul>
+        <li>O destaque é a <b>linha do mês</b>: os 30 dias lado a lado, com o salário, o aluguel e as faturas marcados como eventos.</li>
+        <li>Embaixo, as categorias aparecem como cédulas, com o valor da nota em marca d’água.</li>
+        <li>Números grandes em fonte estreita e pesada, como o valor impresso numa nota.</li>
+      </ul>
+      <h3>Tipografia</h3>
+      <p class="type">Archivo, variando a largura: estreita nos números, normal no texto.</p>
+    </div>
+    <div>
+      <div class="mock dB" role="img" aria-label="Exemplo da direção Cédulas">
+        <div class="top"><div><div class="lbl">Gasto em setembro</div><div class="huge">R$ 8.732<small>até dia 28</small></div></div><div class="lbl" style="color:var(--ok)">↘ 6,2% vs. agosto</div></div>
+        <div class="tl">
+          <svg viewBox="0 0 600 120" aria-hidden="true">
+            <g id="days"></g>
+            <line x1="0" x2="600" y1="88" y2="88" stroke="#2a3644"/>
+            <g><line x1="92" x2="92" y1="10" y2="88" stroke="#5fd39a" stroke-dasharray="3 3"/><text class="ev" x="96" y="18">salário + R$ 11.200</text></g>
+            <g><line x1="113" x2="113" y1="30" y2="88" stroke="#2a8fb3" stroke-dasharray="3 3"/><text class="ev" x="117" y="38">aluguel</text></g>
+            <g><line x1="236" x2="236" y1="44" y2="88" stroke="#9fb0be" stroke-dasharray="3 3"/><text class="ev" x="240" y="52">fatura Itaú</text></g>
+            <text x="2" y="104">1 set</text><text x="282" y="104">15</text><text x="548" y="104">hoje · 28</text>
+          </svg>
+        </div>
+        <div class="cards">
+          <div class="c" data-n="100" style="--nc:var(--n100)"><div class="nm"><i></i>Moradia</div><div class="v">R$ 2.850</div><div class="bar"><b style="width:98%"></b></div></div>
+          <div class="c" data-n="10" style="--nc:var(--n10)"><div class="nm"><i></i>Alimentação</div><div class="v">R$ 1.640</div><div class="bar"><b style="width:82%"></b></div></div>
+          <div class="c" data-n="20" style="--nc:var(--n20)"><div class="nm"><i></i>Compras</div><div class="v">R$ 1.120</div><div class="bar"><b style="width:100%"></b></div></div>
+        </div>
+      </div>
+      <div class="cap">Escuro por padrão. A cor de cada categoria é a mesma em todos os gráficos, como já é hoje.</div>
+    </div>
+  </section>
+
+  <!-- C -->
+  <section class="dir">
+    <div>
+      <span class="tag">C</span>
+      <h2>Conversa no centro</h2>
+      <p class="idea">A conversa vira a tela principal. Cada resposta pode ser fixada à direita, e essa coluna vira o seu painel.</p>
+      <h3>Paleta</h3>
+      <div class="sw">
+        <div><i style="background:#17121c"></i><span><b>Berinjela</b><code>#17121C</code></span></div>
+        <div><i style="background:#211a28"></i><span><b>Superfície</b><code>#211A28</code></span></div>
+        <div><i style="background:#c4a7ff"></i><span><b>Lilás</b><code>#C4A7FF</code></span></div>
+        <div><i style="background:#ffb59a"></i><span><b>Pêssego</b><code>#FFB59A</code></span></div>
+        <div><i style="background:#8fe3b0"></i><span><b>Positivo</b><code>#8FE3B0</code></span></div>
+      </div>
+      <h3>Organização</h3>
+      <ul>
+        <li>Três colunas: navegação mínima, a conversa e o “contexto” com o que você fixou.</li>
+        <li>O painel é montado por você: perguntou do delivery e gostou do gráfico? Fixa.</li>
+        <li>É a mais diferente do Pierre e a mais fiel à ideia de “sem planilhas”.</li>
+      </ul>
+      <h3>Tipografia</h3>
+      <p class="type">Onest no texto, IBM Plex Mono nos valores.</p>
+    </div>
+    <div>
+      <div class="mock dC" role="img" aria-label="Exemplo da direção Conversa no centro">
+        <div class="rail"><i class="on"></i><i></i><i></i><i></i></div>
+        <div class="chat">
+          <div class="me">quanto gastei com delivery esse mês?</div>
+          <div class="bot"><p><b>R$ 412,80</b> em 11 pedidos, 23% a mais que agosto. Quase metade foi às sextas.</p>
+            <div class="ans"><div class="k">delivery por semana</div>
+              <svg viewBox="0 0 260 60" style="display:block;width:100%;height:auto;margin-top:6px"><rect x="0" y="22" width="48" height="38" rx="4" fill="#2b2333"/><rect x="70" y="8" width="48" height="52" rx="4" fill="#2b2333"/><rect x="140" y="27" width="48" height="33" rx="4" fill="#2b2333"/><rect x="210" y="16" width="48" height="44" rx="4" fill="#ffb59a"/></svg>
+              <div class="pin">⌖ fixar no painel</div></div></div>
+          <div class="comp">Pergunte ou anote um gasto<b></b></div>
+        </div>
+        <div class="ctx">
+          <div class="h">Fixados</div>
+          <div class="w"><div class="k">Ritmo de gastos</div><div class="v">−R$ 579,82</div><svg viewBox="0 0 160 40"><path d="M0 38 L20 34 L35 18 L60 15 L85 12 L110 9 L140 6" fill="none" stroke="#c4a7ff" stroke-width="2"/><path d="M0 38 L20 33 L35 16 L60 12 L85 8 L110 5 L160 2" fill="none" stroke="#7a6f85" stroke-dasharray="3 3"/></svg></div>
+          <div class="w"><div class="k">Fatura Nubank</div><div class="v">R$ 2.184,33</div><div style="font-size:11px;color:var(--t3);margin-top:2px">fecha sexta</div></div>
+          <div class="w"><div class="k">Pode gastar por dia</div><div class="v" style="color:var(--ok)">R$ 333,91</div></div>
+        </div>
+      </div>
+      <div class="cap">As telas de categorias, parcelamentos e cartões continuam existindo, abertas pela barra da esquerda.</div>
+    </div>
+  </section>
+
+  <!-- D -->
+  <section class="dir">
+    <div>
+      <span class="tag">D</span>
+      <h2>Envelopes</h2>
+      <p class="idea">A pergunta que importa no dia a dia é “quanto ainda posso gastar?”. O número principal é esse, e o orçamento vira envelopes de papel pardo.</p>
+      <h3>Paleta</h3>
+      <div class="sw">
+        <div><i style="background:#eef1ec"></i><span><b>Sálvia</b><code>#EEF1EC</code></span></div>
+        <div><i style="background:#1e3a2b"></i><span><b>Floresta</b><code>#1E3A2B</code></span></div>
+        <div><i style="background:#6fd3a8"></i><span><b>Menta</b><code>#6FD3A8</code></span></div>
+        <div><i style="background:#d8bd8f"></i><span><b>Papel pardo</b><code>#D8BD8F</code></span></div>
+        <div><i style="background:#c2452d"></i><span><b>Estourou</b><code>#C2452D</code></span></div>
+      </div>
+      <h3>Organização</h3>
+      <ul>
+        <li>No topo: <b>pode gastar hoje</b>, já descontando contas fixas, parcelas e a meta de poupança.</li>
+        <li>Cada categoria com orçamento é um envelope que vai “enchendo” conforme você gasta. Estourou, ganha borda vermelha.</li>
+        <li>Mantém a menta que você gostou, sobre um verde mais escuro e menos “app de banco”.</li>
+      </ul>
+      <h3>Tipografia</h3>
+      <p class="type">Schibsted Grotesk, com números pesados e bem fechados.</p>
+    </div>
+    <div>
+      <div class="mock dD" role="img" aria-label="Exemplo da direção Envelopes">
+        <div class="hero">
+          <div><div class="k">Pode gastar hoje</div><div class="v">R$ 333,91</div><div class="sub">e ainda guardar R$ 3.000 em setembro</div></div>
+          <div class="meter"><div class="track"><b style="width:62%;background:var(--forest)"></b><b style="width:24%;background:var(--kraft2)"></b><b style="width:14%;background:var(--mint)"></b></div><div class="lg"><span>gasto</span><span>meta</span><span>livre</span></div></div>
+        </div>
+        <div class="env">
+          <div class="e"><div class="fill" style="height:94%"></div><div class="nm">Comer fora</div><div class="v">R$ 40</div><div class="s">sobra de R$ 700</div></div>
+          <div class="e"><div class="fill" style="height:82%"></div><div class="nm">Mercado</div><div class="v">R$ 220</div><div class="s">sobra de R$ 1.200</div></div>
+          <div class="e"><div class="fill" style="height:90%"></div><div class="nm">Transporte</div><div class="v">R$ 80</div><div class="s">sobra de R$ 800</div></div>
+          <div class="e over"><div class="fill" style="height:100%"></div><div class="nm">Lazer</div><div class="v">−R$ 30</div><div class="s">passou de R$ 500</div></div>
+        </div>
+        <div class="say"><b class="av"></b>Quer tirar R$ 30 do envelope de Transporte para cobrir o Lazer?</div>
+      </div>
+      <div class="cap">Claro por padrão; no escuro, o fundo vira floresta e os envelopes escurecem.</div>
+    </div>
+  </section>
+
+  <section style="border-top:1px solid var(--line); padding-top:32px">
+    <h2 style="font-size:20px; letter-spacing:-.02em; margin:0 0 4px">Lado a lado</h2>
+    <div class="tblw"><table class="cmp">
+      <thead><tr><th>Direção</th><th>O que aparece primeiro</th><th>Onde fica a conversa</th><th>Distância do Pierre</th></tr></thead>
+      <tbody>
+        <tr><td><b>A · Caderninho</b></td><td>Os lançamentos de hoje, com recados</td><td>Recados na margem + botão de conversa</td><td>Grande</td></tr>
+        <tr><td><b>B · Cédulas</b></td><td>A linha do mês com eventos</td><td>Painel lateral, como hoje</td><td>Média</td></tr>
+        <tr><td><b>C · Conversa no centro</b></td><td>A conversa e o que você fixou</td><td>É a tela principal</td><td>Grande</td></tr>
+        <tr><td><b>D · Envelopes</b></td><td>Quanto você pode gastar hoje</td><td>Sugestões dentro dos envelopes + painel</td><td>Média</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <div class="rec">
+    <h2>Minha sugestão</h2>
+    <p><b>B · Cédulas</b> com o número principal da <b>D</b>. As cores das notas do Real só fazem sentido num app brasileiro de dinheiro, então ninguém confunde com outro produto. A linha do mês mostra algo que o Pierre não mostra: quando o dinheiro entra e sai.</p>
+    <p>No topo, “pode gastar hoje” substitui o saldo como destaque, porque é a pergunta que você faria para o liu liu todo dia.</p>
+  </div>
+</div>
+
+<script>
+// daily bars for the Cédulas month line (sample values; color = biggest category of the day)
+(function(){
+  const g=document.getElementById('days'); if(!g) return;
+  const c=['#d9534f','#9a6fc2','#b98a10','#d9534f','#5b7fc0','#2a8fb3','#d9534f','#9a6fc2','#b98a10','#2a8fb3','#d9534f','#d9534f','#9a6fc2','#5b7fc0','#b8702f','#d9534f','#b98a10','#d9534f','#9a6fc2','#d9534f','#5b7fc0','#b98a10','#d9534f','#9a6fc2','#d9534f','#d9534f','#b98a10','#9a6fc2'];
+  const v=[30,22,40,26,52,78,34,28,44,60,25,38,30,48,36,70,32,26,42,58,28,36,46,30,40,66,52,24];
+  g.innerHTML=v.map((h,i)=>`<rect x="${i*20.5+3}" y="${88-h}" width="15" height="${h}" rx="3" fill="${c[i]}"/>`).join('')
+    + [29,30].map((d,j)=>`<rect x="${(28+j)*20.5+3}" y="76" width="15" height="12" rx="3" fill="none" stroke="#2a3644" stroke-dasharray="2 2"/>`).join('');
+})();
+</script>
