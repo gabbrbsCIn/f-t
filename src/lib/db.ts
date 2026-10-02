@@ -9,15 +9,29 @@ export interface Db {
 
 const g = globalThis as unknown as { __liuDb?: Promise<Db> };
 
-/** Postgres when DATABASE_URL is set (production); otherwise an embedded PGlite database in .data/. */
+/** Connection string under any of the names the Postgres integrations (Neon, Supabase, Vercel) use. */
+export function databaseUrl(): string | undefined {
+  return process.env.DATABASE_URL || process.env.POSTGRES_URL || process.env.DATABASE_URL_UNPOOLED || process.env.POSTGRES_URL_NON_POOLING || undefined;
+}
+
+/** Postgres when a connection string is set (production); otherwise an embedded PGlite database in .data/. */
 export function getDb(): Promise<Db> {
-  if (!g.__liuDb) g.__liuDb = init();
+  if (!g.__liuDb) {
+    // Don't cache a failed connection: the next request tries again.
+    g.__liuDb = init().catch((e) => {
+      g.__liuDb = undefined;
+      throw e;
+    });
+  }
   return g.__liuDb;
 }
 
 async function init(): Promise<Db> {
   let db: Db;
-  const url = process.env.DATABASE_URL;
+  const url = databaseUrl();
+  if (!url && process.env.VERCEL) {
+    throw new Error("DATABASE_URL não configurada. Conecte um Postgres (aba Storage → Neon) e faça um Redeploy.");
+  }
   if (url) {
     const { Pool } = await import("pg");
     const local = /localhost|127\.0\.0\.1/.test(url);

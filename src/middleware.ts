@@ -2,7 +2,7 @@ import { NextResponse, type NextRequest } from "next/server";
 import { SESSION_COOKIE, safeEqual, sessionToken } from "@/lib/auth";
 
 // Routes that authenticate on their own (webhook secret, cron secret) or are the login itself.
-const OPEN = ["/login", "/api/login", "/api/pluggy/webhook", "/api/cron/"];
+const OPEN = ["/login", "/api/login", "/api/health", "/api/pluggy/webhook", "/api/cron/"];
 
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
