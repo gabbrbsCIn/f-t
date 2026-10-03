@@ -61,6 +61,19 @@ CREATE TABLE IF NOT EXISTS investments (
   balance double precision NOT NULL DEFAULT 0
 );
 ALTER TABLE items ADD COLUMN IF NOT EXISTS next_auto_sync_at text;
+-- Your edits live next to what the bank sent, so a new sync never overwrites them.
+ALTER TABLE transactions ADD COLUMN IF NOT EXISTS description_override text;
+ALTER TABLE transactions ADD COLUMN IF NOT EXISTS amount_override double precision;
+ALTER TABLE transactions ADD COLUMN IF NOT EXISTS date_override text;
+ALTER TABLE transactions ADD COLUMN IF NOT EXISTS hidden boolean NOT NULL DEFAULT false;
+ALTER TABLE transactions ADD COLUMN IF NOT EXISTS note text;
+CREATE TABLE IF NOT EXISTS custom_categories (
+  id serial PRIMARY KEY,
+  group_key text NOT NULL,
+  label text NOT NULL,
+  created_at text DEFAULT (now()::text),
+  UNIQUE (group_key, label)
+);
 ALTER TABLE investments ADD COLUMN IF NOT EXISTS subtype text;
 ALTER TABLE investments ADD COLUMN IF NOT EXISTS gross double precision;
 ALTER TABLE investments ADD COLUMN IF NOT EXISTS invested double precision;

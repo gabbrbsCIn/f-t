@@ -1,11 +1,13 @@
 "use client";
 import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
-import { GROUPS, group } from "@/lib/categories";
+import { group } from "@/lib/categories";
 import { normalize } from "@/lib/categorize";
 import { BRL } from "@/lib/format";
 import { BankTile } from "./BankTile";
+import type { CatOption } from "./CategoryPicker";
 import { Icon } from "./Icon";
+import { TxModal } from "./TxModal";
 
 export type TxView = {
   id: string;
@@ -16,6 +18,12 @@ export type TxView = {
   group_key: string;
   sub_label: string;
   excluded: boolean;
+  hidden: boolean;
+  note: string | null;
+  edited: boolean;
+  original_description: string;
+  original_amount: number;
+  original_date: string;
   source: string;
   installment: string | null;
   account: { id: string; name: string; color: string | null; type: string };
@@ -30,25 +38,36 @@ function dayTitle(d: string, today: string) {
   return d === today ? `Hoje · ${label}` : label[0].toUpperCase() + label.slice(1);
 }
 
-export function TxList({ txs, today, accounts }: { txs: TxView[]; today: string; accounts: { id: string; label: string }[] }) {
+export function TxList({ txs, today, accounts, options: initialOptions }: { txs: TxView[]; today: string; accounts: { id: string; label: string }[]; options: CatOption[] }) {
   const router = useRouter();
   const [q, setQ] = useState("");
   const [filter, setFilter] = useState("all");
-  const [editing, setEditing] = useState<string | null>(null);
-  const filters = [["all", "Todas"], ["out", "Saídas"], ["in", "Entradas"], ...accounts.map((a) => [a.id, a.label]), ["hidden", "Fora dos gastos"]];
+  const [showHidden, setShowHidden] = useState(false);
+  const [editing, setEditing] = useState<TxView | "new" | null>(null);
+  const [options, setOptions] = useState(initialOptions);
+  const filters = [["all", "Todas"], ["out", "Saídas"], ["in", "Entradas"], ...accounts.map((a) => [a.id, a.label]), ["moved", "Entre contas"]];
+  const hiddenCount = txs.filter((t) => t.hidden).length;
 
   const shown = useMemo(() => {
     const nq = normalize(q);
     return txs.filter((t) => {
-      if (filter === "out" && (t.direction !== "out" || t.excluded)) return false;
-      if (filter === "in" && (t.direction !== "in" || t.excluded)) return false;
-      if (filter === "hidden" && !t.excluded) return false;
-      if (!["all", "out", "in", "hidden"].includes(filter) && t.account.id !== filter) return false;
-      if (filter !== "hidden" && filter !== "all" && t.excluded) return false;
+      if (t.hidden && !showHidden) return false;
+      const moved = t.excluded && !t.hidden;
+      if (filter === "out" && (t.direction !== "out" || moved)) return false;
+      if (filter === "in" && (t.direction !== "in" || moved)) return false;
+      if (filter === "moved" && !moved) return false;
+      if (!["all", "out", "in", "moved"].includes(filter) && t.account.id !== filter) return false;
       if (!nq) return true;
-      return normalize(`${t.description} ${t.sub_label} ${group(t.group_key).name} ${t.amount.toFixed(2).replace(".", ",")}`).includes(nq);
+      return normalize(`${t.description} ${t.original_description} ${t.sub_label} ${group(t.group_key).name} ${t.note ?? ""} ${t.amount.toFixed(2).replace(".", ",")}`).includes(nq);
     });
-  }, [txs, q, filter]);
+  }, [txs, q, filter, showHidden]);
+
+  const sums = useMemo(() => {
+    const counted = shown.filter((t) => !t.excluded);
+    const out = counted.filter((t) => t.direction === "out").reduce((s, t) => s + t.amount, 0);
+    const inc = counted.filter((t) => t.direction === "in").reduce((s, t) => s + t.amount, 0);
+    return { count: shown.length, out, inc, net: inc - out };
+  }, [shown]);
 
   const days = useMemo(() => {
     const m = new Map<string, TxView[]>();
@@ -56,27 +75,28 @@ export function TxList({ txs, today, accounts }: { txs: TxView[]; today: string;
     return [...m.entries()];
   }, [shown]);
 
-  async function save(t: TxView, value: string, rule: boolean) {
-    const [g, sub] = value.split("|");
-    await fetch(`/api/transactions/${encodeURIComponent(t.id)}`, { method: "PATCH", headers: { "content-type": "application/json" }, body: JSON.stringify({ group_key: g, sub_label: sub, rule }) });
-    setEditing(null);
-    router.refresh();
-  }
-
-  const subsByGroup = useMemo(() => {
-    const m = new Map<string, Set<string>>();
-    for (const t of txs) if (t.direction === "out") m.set(t.group_key, (m.get(t.group_key) ?? new Set()).add(t.sub_label));
-    return m;
-  }, [txs]);
-
   return (
     <>
+      <div className="tx-sum">
+        <div className="p"><span className="lbl">Transações</span><b className="n">{sums.count}</b></div>
+        <div className="p"><span className="lbl">Saídas</span><b className="n neg">{BRL(sums.out)}</b></div>
+        <div className="p"><span className="lbl">Entradas</span><b className="n pos">{BRL(sums.inc)}</b></div>
+        <div className="p"><span className="lbl">Saldo</span><b className={`n ${sums.net >= 0 ? "pos" : "neg"}`}>{sums.net >= 0 ? "" : "− "}{BRL(Math.abs(sums.net))}</b></div>
+      </div>
+
       <div className="toolbar">
-        <label className="search"><Icon name="search" /><input id="tx-q" value={q} onChange={(e) => setQ(e.target.value)} placeholder="Buscar loja, categoria ou valor" /></label>
+        <label className="search"><Icon name="search" /><input id="tx-q" value={q} onChange={(e) => setQ(e.target.value)} placeholder="Buscar loja, categoria, observação ou valor" /></label>
+        <button className="btn pri" onClick={() => setEditing("new")} style={{ display: "inline-flex", gap: 6, alignItems: "center" }}><Icon name="plus" size={14} />Nova transação</button>
+      </div>
+      <div className="toolbar" style={{ marginTop: -4 }}>
         <div className="chips">
           {filters.map(([k, l]) => <button key={k} aria-pressed={filter === k} onClick={() => setFilter(k)}>{l}</button>)}
         </div>
+        <label className="check" style={{ marginLeft: "auto", marginTop: 0 }}>
+          <input type="checkbox" checked={showHidden} onChange={(e) => setShowHidden(e.target.checked)} /> Mostrar ocultas{hiddenCount ? ` (${hiddenCount})` : ""}
+        </label>
       </div>
+
       {days.length === 0 && <div className="p faint" style={{ textAlign: "center" }}>Nada com esse filtro. Tente outra palavra ou volte para “Todas”.</div>}
       {days.map(([day, list]) => {
         const out = list.filter((t) => t.direction === "out" && !t.excluded).reduce((s, t) => s + t.amount, 0);
@@ -85,54 +105,46 @@ export function TxList({ txs, today, accounts }: { txs: TxView[]; today: string;
             <div className="day-h"><span>{dayTitle(day, today)}</span><span className="n">{out ? `saiu ${BRL(out)}` : ""}</span></div>
             <div className="p plist">
               {list.map((t) => (
-                <div className="tx" key={t.id} style={t.excluded ? { opacity: 0.55 } : undefined}>
+                <button className="tx tx-btn" key={t.id} onClick={() => setEditing(t)} style={t.excluded ? { opacity: t.hidden ? 0.4 : 0.55 } : undefined} title="Ver e editar">
                   <div style={{ minWidth: 0 }}>
                     <div className="t1">
                       {t.description}
                       {t.source === "chat" && <span className="via">anotado na conversa</span>}
+                      {t.source === "manual" && <span className="via">criada por você</span>}
+                      {t.hidden && <span className="via" style={{ background: "var(--raise-2)", color: "var(--fg-2)" }}>oculta</span>}
+                      {t.edited && <span className="via" style={{ background: "var(--raise-2)", color: "var(--fg-2)" }}>editada</span>}
                       {t.installment && <span className="via" style={{ background: "var(--raise-2)", color: "var(--fg-2)" }}>{t.installment}</span>}
                     </div>
                     <div className="t2" style={{ display: "flex", alignItems: "center", gap: 6 }}>
                       <BankTile name={t.account.name} color={t.account.color} small />
-                      {t.account.name}{t.account.type === "CREDIT" ? " · crédito" : ""}
+                      {t.account.name}{t.account.type === "CREDIT" ? " · crédito" : ""}{t.note ? ` · ${t.note}` : ""}
                     </div>
                   </div>
                   <div className="cat">
-                    {editing === t.id && t.direction === "out" ? (
-                      <CategoryPicker t={t} subsByGroup={subsByGroup} onSave={save} onCancel={() => setEditing(null)} />
-                    ) : (
-                      <button className="cat" style={{ cursor: t.direction === "out" ? "pointer" : "default" }} onClick={() => t.direction === "out" && setEditing(t.id)} title={t.direction === "out" ? "Mudar categoria" : undefined}>
-                        <i className="cdot" style={{ background: t.group_key === "entrada" ? "var(--pos)" : t.excluded ? "var(--line-2)" : group(t.group_key).color }} />
-                        <span className="t1" style={{ fontWeight: 400 }}>{t.sub_label}</span>
-                      </button>
-                    )}
+                    <i className="cdot" style={{ background: t.group_key === "entrada" ? "var(--pos)" : t.group_key === "transfer" ? "var(--line-2)" : group(t.group_key).color }} />
+                    <span className="t1" style={{ fontWeight: 400 }}>{t.sub_label}</span>
                   </div>
                   <div className={`amt ${t.direction === "in" ? "pos" : ""}`}>{t.direction === "in" ? "+ " : "− "}{BRL(t.amount)}</div>
-                </div>
+                </button>
               ))}
             </div>
           </section>
         );
       })}
-    </>
-  );
-}
 
-function CategoryPicker({ t, subsByGroup, onSave, onCancel }: { t: TxView; subsByGroup: Map<string, Set<string>>; onSave: (t: TxView, v: string, rule: boolean) => void; onCancel: () => void }) {
-  const [rule, setRule] = useState(true);
-  return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 4, minWidth: 0 }}>
-      <select className="recat" autoFocus defaultValue={`${t.group_key}|${t.sub_label}`} onChange={(e) => onSave(t, e.target.value, rule)} onKeyDown={(e) => e.key === "Escape" && onCancel()} aria-label="Nova categoria">
-        {GROUPS.map((g) => (
-          <optgroup key={g.key} label={g.name}>
-            {[...(subsByGroup.get(g.key) ?? new Set([g.name]))].sort().map((s) => <option key={s} value={`${g.key}|${s}`}>{s}</option>)}
-          </optgroup>
-        ))}
-        <optgroup label="Fora dos gastos"><option value="transfer|Entre suas contas">Entre suas contas</option></optgroup>
-      </select>
-      <label className="faint" style={{ fontSize: 11.5, display: "flex", gap: 6, alignItems: "center" }}>
-        <input type="checkbox" checked={rule} onChange={(e) => setRule(e.target.checked)} /> aplicar nas parecidas
-      </label>
-    </div>
+      {editing && (
+        <TxModal
+          key={editing === "new" ? "new" : editing.id}
+          tx={editing === "new" ? null : editing}
+          options={options}
+          onOptionsChange={setOptions}
+          onClose={() => setEditing(null)}
+          onSaved={() => {
+            setEditing(null);
+            router.refresh();
+          }}
+        />
+      )}
+    </>
   );
 }

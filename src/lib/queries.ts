@@ -17,14 +17,19 @@ export type AccountRow = {
   due_date: string | null;
 };
 
-const TX_COLS = `t.id, t.account_id, t.date, t.description, t.amount, t.direction, t.group_key, t.sub_label, t.excluded,
+// Your edits (overrides) win over what the bank sent; hidden transactions leave the totals.
+const TX_DATE = "COALESCE(t.date_override, t.date)";
+const TX_COLS = `t.id, t.account_id, ${TX_DATE} AS date, COALESCE(t.description_override, t.description) AS description,
+  COALESCE(t.amount_override, t.amount) AS amount, t.direction, t.group_key, t.sub_label, (t.excluded OR t.hidden) AS excluded,
+  t.hidden, t.note, t.description AS original_description, t.amount AS original_amount, t.date AS original_date,
+  (t.description_override IS NOT NULL OR t.amount_override IS NOT NULL OR t.date_override IS NOT NULL) AS edited,
   t.installment_number, t.total_installments, t.purchase_date, t.source, a.type AS account_type`;
 
 export async function txsBetween(from: string, to: string): Promise<Tx[]> {
   const db = await getDb();
   return db.query<Tx>(
     `SELECT ${TX_COLS} FROM transactions t LEFT JOIN accounts a ON a.id = t.account_id
-     WHERE t.date >= $1 AND t.date <= $2 ORDER BY t.date DESC, t.created_at DESC`,
+     WHERE ${TX_DATE} >= $1 AND ${TX_DATE} <= $2 ORDER BY ${TX_DATE} DESC, t.created_at DESC`,
     [from, to],
   );
 }

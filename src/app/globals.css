@@ -361,3 +361,33 @@ button.inv-row:hover{background:var(--raise)}
 .conv:hover{background:var(--raise)}
 .conv.on{border-color:var(--line-2); background:var(--raise)}
 .conv.new{flex-direction:row; align-items:center; gap:8px; color:var(--mint); font-weight:600}
+/* Category picker */
+.cp{position:relative}
+.cp-btn{display:flex; align-items:center; gap:8px; width:100%; padding:9px 12px; border:1px solid var(--line-2); border-radius:10px; background:var(--raise); text-align:left; min-width:0}
+.cp-btn:hover{border-color:var(--fg-3)}
+.cp-pop{position:absolute; left:0; right:0; top:calc(100% + 6px); z-index:30; background:var(--panel); border:1px solid var(--line-2); border-radius:12px; box-shadow:0 16px 40px #0007; overflow:hidden}
+.cp-list{max-height:280px; overflow:auto; padding:0 0 8px}
+.cp-h{display:flex; align-items:center; gap:7px; font-size:11px; letter-spacing:.06em; text-transform:uppercase; color:var(--fg-3); padding:10px 14px 4px}
+.cp-opt{display:block; width:100%; text-align:left; padding:7px 14px 7px 29px; font-size:13.5px}
+.cp-opt:hover{background:var(--raise)}
+.cp-opt.on{color:var(--mint); font-weight:600}
+.cp-create{display:flex; flex-wrap:wrap; align-items:center; gap:8px; padding:8px 14px 10px; border-bottom:1px solid var(--line); font-size:13px}
+/* Transactions: summary, clickable rows, edit modal */
+.tx-sum{display:grid; grid-template-columns:repeat(4, minmax(0,1fr)); gap:10px; margin-bottom:14px}
+.tx-sum .p{padding:12px 16px; gap:4px}
+.tx-sum b{font-size:20px; font-weight:800; font-stretch:80%; letter-spacing:-.01em}
+.tx-btn{width:100%; text-align:left; border:0; background:none; color:inherit; cursor:pointer}
+.tx-btn+.tx-btn{border-top:1px solid var(--line)}
+.tx-btn:focus-visible{outline:2px solid var(--mint); outline-offset:-2px}
+.txm{width:min(520px, 100%); display:flex; flex-direction:column; gap:6px; overflow:visible}
+.txm h2{margin-bottom:10px}
+.txm .lbl{margin-top:10px}
+.txm textarea.field{resize:vertical; font:inherit}
+.txm-row{display:flex; gap:12px; flex-wrap:wrap}
+.txm-kv{display:flex; justify-content:space-between; gap:10px; font-size:13px; margin-top:12px; padding:8px 0; border-top:1px solid var(--line); border-bottom:1px solid var(--line)}
+.amount-field{display:flex; align-items:center; gap:8px}
+.amount-field .sign{font-weight:700; white-space:nowrap; min-width:46px}
+.amount-field button.sign{border:1px solid var(--line-2); border-radius:8px; padding:8px 8px}
+.check{display:flex; gap:8px; align-items:center; font-size:12.5px; color:var(--fg-2); margin-top:8px; cursor:pointer}
+@container app (max-width: 640px){ .tx-sum{grid-template-columns:1fr 1fr} .tx-sum b{font-size:17px} }
+.scrim{overflow:auto}

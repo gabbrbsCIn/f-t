@@ -1,12 +1,20 @@
 import { NextResponse } from "next/server";
-import { recategorize } from "@/lib/actions";
+import { deleteTransaction, updateTransaction, type TxPatch } from "@/lib/actions";
 
 export async function PATCH(req: Request, ctx: { params: Promise<{ id: string }> }) {
   const { id } = await ctx.params;
-  const body = (await req.json().catch(() => ({}))) as { group_key?: string; sub_label?: string; rule?: boolean };
+  const body = (await req.json().catch(() => ({}))) as TxPatch;
   try {
-    const r = await recategorize(id, String(body.group_key ?? ""), String(body.sub_label ?? ""), body.rule !== false);
-    return NextResponse.json(r);
+    return NextResponse.json(await updateTransaction(id, body));
+  } catch (e) {
+    return NextResponse.json({ error: (e as Error).message }, { status: 400 });
+  }
+}
+
+export async function DELETE(_req: Request, ctx: { params: Promise<{ id: string }> }) {
+  const { id } = await ctx.params;
+  try {
+    return NextResponse.json(await deleteTransaction(id));
   } catch (e) {
     return NextResponse.json({ error: (e as Error).message }, { status: 400 });
   }

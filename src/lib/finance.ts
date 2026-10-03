@@ -17,6 +17,12 @@ export type Tx = {
   purchase_date: string | null;
   source: string;
   account_type?: string | null;
+  hidden?: boolean;
+  note?: string | null;
+  original_description?: string;
+  original_amount?: number;
+  original_date?: string;
+  edited?: boolean;
 };
 
 export const isSpend = (t: Tx) => t.direction === "out" && !t.excluded;

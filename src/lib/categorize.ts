@@ -97,3 +97,12 @@ export function categorize(input: CategorizeInput, rules: Rule[] = []): Categori
   }
   return { group: "outros", sub: "Sem categoria", excluded: false };
 }
+
+/** Subcategories the app knows for each group, in display order (your own categories are added on top). */
+export const CATALOG: Record<GroupKey, string[]> = SPEND.reduce(
+  (acc, [, g, sub]) => {
+    if (!acc[g].includes(sub)) acc[g].push(sub);
+    return acc;
+  },
+  { moradia: [], alim: [], compras: [], saude: [], lazer: [], transp: [], outros: ["Sem categoria"] } as Record<GroupKey, string[]>,
+);
