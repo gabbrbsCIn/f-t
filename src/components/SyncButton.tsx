@@ -13,6 +13,27 @@ function ago(iso: string | null) {
   return `atualizado há ${Math.round(h / 24)} d`;
 }
 
+type SyncResponse = {
+  error?: string;
+  errors?: string[];
+  transactions?: number;
+  refresh?: { name: string; requested: boolean; reason?: string }[];
+  nextAuto?: string | null;
+};
+
+function describe(r: SyncResponse): string {
+  if (r.error) return `Não deu para atualizar: ${r.error}`;
+  const parts = [`${r.transactions ?? 0} transações conferidas.`];
+  const asked = (r.refresh ?? []).filter((x) => x.requested).map((x) => x.name);
+  if (asked.length) parts.push(`Pedi dados novos a ${asked.join(", ")}: chegam em alguns minutos e entram sozinhos.`);
+  if ((r.refresh ?? []).some((x) => !x.requested && /meu ?pluggy/i.test(x.name))) {
+    const when = r.nextAuto ? new Date(r.nextAuto).toLocaleString("pt-BR", { weekday: "short", hour: "2-digit", minute: "2-digit" }) : null;
+    parts.push(`O MeuPluggy atualiza sozinho uma vez por dia${when ? ` (próxima: ${when})` : ""}, e o liu liu importa assim que terminar.`);
+  }
+  if (r.errors?.length) parts.push(`Falhou: ${r.errors.join("; ")}`);
+  return parts.join(" ");
+}
+
 export function SyncButton({ last, configured }: { last: string | null; configured: boolean }) {
   const router = useRouter();
   const [busy, setBusy] = useState(false);
@@ -28,8 +49,8 @@ export function SyncButton({ last, configured }: { last: string | null; configur
           setBusy(true);
           const r = await fetch("/api/sync", { method: "POST" }).then((x) => x.json()).catch(() => ({ error: "sem conexão" }));
           setBusy(false);
-          setMsg(r.error ? `Não deu para atualizar: ${r.error}` : r.errors?.length ? `Alguns bancos falharam: ${r.errors.join("; ")}` : `${r.transactions} transações conferidas`);
-          setTimeout(() => setMsg(null), 4000);
+          setMsg(describe(r));
+          setTimeout(() => setMsg(null), 9000);
           router.refresh();
         }}
       >

@@ -1,20 +1,31 @@
 import { NextResponse } from "next/server";
-import { chat, history } from "@/lib/ai/chat";
+import { chat, conversations, currentConversation, deleteConversation, history, validConversationId } from "@/lib/ai/chat";
 import { OllamaError } from "@/lib/ai/ollama";
 
 export const maxDuration = 120;
 
-export async function GET() {
-  return NextResponse.json({ messages: await history() });
+export async function GET(req: Request) {
+  const c = new URL(req.url).searchParams.get("c");
+  const conversation = validConversationId(c) ? c : await currentConversation();
+  const [messages, list] = await Promise.all([history(conversation), conversations()]);
+  return NextResponse.json({ conversation, messages, conversations: list });
+}
+
+export async function DELETE(req: Request) {
+  const c = new URL(req.url).searchParams.get("c");
+  if (!validConversationId(c)) return NextResponse.json({ error: "Conversa inválida." }, { status: 400 });
+  await deleteConversation(c);
+  return NextResponse.json({ ok: true });
 }
 
 export async function POST(req: Request) {
-  const { message } = (await req.json().catch(() => ({}))) as { message?: string };
-  const text = (message ?? "").trim();
+  const body = (await req.json().catch(() => ({}))) as { message?: string; conversation?: string };
+  const text = (body.message ?? "").trim();
   if (!text) return NextResponse.json({ error: "Mensagem vazia." }, { status: 400 });
   if (text.length > 2000) return NextResponse.json({ error: "Mensagem longa demais." }, { status: 400 });
+  const conversation = validConversationId(body.conversation) ? body.conversation : await currentConversation();
   try {
-    return NextResponse.json(await chat(text));
+    return NextResponse.json({ ...(await chat(text, conversation)), conversation });
   } catch (e) {
     if (e instanceof OllamaError) {
       if (e.status === 401 || e.status === 403) return NextResponse.json({ error: "A chave do Ollama não está configurada ou é inválida (OLLAMA_API_KEY)." }, { status: 503 });

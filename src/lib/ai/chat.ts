@@ -26,9 +26,44 @@ Categorias: ${CATEGORY_HELP}. "transfer" marca movimentação entre contas dele 
 
 export type ChatRow = { id: number; role: "user" | "assistant"; display: string; created_at: string };
 
-export async function history(conversation = today()): Promise<ChatRow[]> {
+export type ConversationSummary = { id: string; title: string; updated_at: string; messages: number };
+
+export function newConversationId() {
+  return `c-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 6)}`;
+}
+
+export function validConversationId(id: unknown): id is string {
+  return typeof id === "string" && /^[\w-]{6,40}$/.test(id);
+}
+
+/** Past conversations, newest first, titled by their first question. */
+export async function conversations(limit = 30): Promise<ConversationSummary[]> {
+  const db = await getDb();
+  return db.query<ConversationSummary>(
+    `SELECT conversation AS id,
+            COALESCE((SELECT display FROM chat_messages f WHERE f.conversation = m.conversation AND f.role = 'user' AND f.display IS NOT NULL ORDER BY f.id LIMIT 1), 'Conversa') AS title,
+            max(created_at) AS updated_at,
+            count(*) FILTER (WHERE display IS NOT NULL)::int AS messages
+     FROM chat_messages m GROUP BY conversation ORDER BY max(id) DESC LIMIT $1`,
+    [limit],
+  );
+}
+
+/** The conversation to open by default: the latest one if it had activity today, otherwise a new one. */
+export async function currentConversation(): Promise<string> {
+  const [latest] = await conversations(1);
+  if (latest && latest.updated_at.slice(0, 10) >= today()) return latest.id;
+  return newConversationId();
+}
+
+export async function history(conversation: string): Promise<ChatRow[]> {
   const db = await getDb();
   return db.query<ChatRow>("SELECT id, role, display, created_at FROM chat_messages WHERE conversation = $1 AND display IS NOT NULL ORDER BY id", [conversation]);
+}
+
+export async function deleteConversation(conversation: string) {
+  const db = await getDb();
+  await db.query("DELETE FROM chat_messages WHERE conversation = $1", [conversation]);
 }
 
 function parseArgs(a: Record<string, unknown> | string): unknown {
@@ -40,10 +75,9 @@ function parseArgs(a: Record<string, unknown> | string): unknown {
   }
 }
 
-/** One user turn. Each day starts a fresh conversation; tool calls and results are stored so follow-ups have context. */
-export async function chat(text: string): Promise<{ reply: string; changed: boolean }> {
+/** One user turn in a conversation; tool calls and results are stored so follow-ups have context. */
+export async function chat(text: string, conversation: string): Promise<{ reply: string; changed: boolean }> {
   const db = await getDb();
-  const conversation = today();
   const rows = await db.query<{ content: string }>("SELECT content FROM chat_messages WHERE conversation = $1 ORDER BY id", [conversation]);
   let past: OllamaMessage[] = rows.map((r) => JSON.parse(r.content));
   // Keep the prompt small: start the window at a user message so tool results never lose their call.
@@ -52,7 +86,7 @@ export async function chat(text: string): Promise<{ reply: string; changed: bool
     const firstUser = past.findIndex((m) => m.role === "user");
     past = firstUser >= 0 ? past.slice(firstUser) : [];
   }
-  const messages: OllamaMessage[] = [{ role: "system", content: systemPrompt(conversation) }, ...past];
+  const messages: OllamaMessage[] = [{ role: "system", content: systemPrompt(today()) }, ...past];
   const insertedIds: number[] = [];
 
   const save = async (m: OllamaMessage, display: string | null) => {

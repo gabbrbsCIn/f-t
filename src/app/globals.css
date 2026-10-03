@@ -333,7 +333,7 @@ a{color:inherit; text-decoration:none}
 .recat{background:var(--raise); border:1px solid var(--line-2); border-radius:8px; color:var(--fg); font:inherit; font-size:12.5px; padding:4px 6px; max-width:100%}
 .inline-form{display:flex; gap:8px; align-items:center; margin-top:10px; flex-wrap:wrap}
 .inline-form .field{width:140px; padding:7px 10px}
-.toast{position:fixed; left:50%; top:16px; transform:translateX(-50%); background:var(--raise-2); border:1px solid var(--line-2); padding:8px 14px; border-radius:10px; z-index:20; font-size:13px}
+.toast{position:fixed; left:50%; top:16px; transform:translateX(-50%); max-width:min(560px, calc(100% - 32px)); line-height:1.45; background:var(--raise-2); border:1px solid var(--line-2); padding:8px 14px; border-radius:10px; z-index:20; font-size:13px}
 .more{cursor:pointer}
 .month .mbtn{width:28px; height:28px; border-radius:8px; color:var(--fg-2); display:grid; place-items:center; min-width:0}
 .month a.mbtn:hover{background:var(--raise); color:var(--fg)}
@@ -348,3 +348,16 @@ button.inv-row:hover{background:var(--raise)}
   .inv-row{grid-template-columns:16px minmax(0,1fr) auto auto; padding:11px 14px}
   .inv-row .hide-s{display:none}
 }
+.dh-actions{margin-left:auto; display:flex; gap:2px}
+.dh-actions .x{margin-left:0}
+.dh-actions .x[aria-pressed="true"]{background:var(--raise); color:var(--mint)}
+.dh-actions .x:disabled{opacity:.35; cursor:default}
+.confirm-bar{display:flex; flex-wrap:wrap; align-items:center; gap:8px; padding:10px 16px; border-bottom:1px solid var(--line); background:color-mix(in srgb, var(--neg) 8%, transparent); font-size:13px}
+.confirm-bar span{flex:1; min-width:180px}
+.confirm-bar .btn{padding:5px 12px; font-size:12.5px}
+.btn.danger{background:var(--neg); border-color:var(--neg); color:#fff}
+.conv-list{gap:4px}
+.conv{display:flex; flex-direction:column; gap:2px; text-align:left; padding:10px 12px; border-radius:10px; border:1px solid transparent; min-width:0}
+.conv:hover{background:var(--raise)}
+.conv.on{border-color:var(--line-2); background:var(--raise)}
+.conv.new{flex-direction:row; align-items:center; gap:8px; color:var(--mint); font-weight:600}

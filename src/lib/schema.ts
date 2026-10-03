@@ -60,6 +60,7 @@ CREATE TABLE IF NOT EXISTS investments (
   type text,
   balance double precision NOT NULL DEFAULT 0
 );
+ALTER TABLE items ADD COLUMN IF NOT EXISTS next_auto_sync_at text;
 ALTER TABLE investments ADD COLUMN IF NOT EXISTS subtype text;
 ALTER TABLE investments ADD COLUMN IF NOT EXISTS gross double precision;
 ALTER TABLE investments ADD COLUMN IF NOT EXISTS invested double precision;

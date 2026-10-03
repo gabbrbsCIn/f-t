@@ -3,7 +3,7 @@ import { categorize, type Rule } from "./categorize";
 import { addDays, isoDay, today } from "./dates";
 import { getDb, insertMany, type Db } from "./db";
 import { resolveInstitutions } from "./institutions";
-import { pluggy } from "./pluggy";
+import { pluggy, webhookUrl } from "./pluggy";
 
 const FIRST_SYNC_DAYS = 365;
 const OVERLAP_DAYS = 10;
@@ -16,9 +16,53 @@ export async function registerEnvItems(db: Db) {
   for (const id of ids) await db.query("INSERT INTO items (id) VALUES ($1) ON CONFLICT (id) DO NOTHING", [id]);
 }
 
+/**
+ * Make sure the Pluggy application notifies us when any item finishes updating. Items created from the
+ * Pluggy dashboard have no per-item webhook, so we register one for the whole application.
+ */
+export async function ensureWebhook(): Promise<"ok" | "created" | "updated" | "skipped"> {
+  const url = webhookUrl();
+  if (!url) return "skipped";
+  const api = pluggy();
+  const hooks = (await api.fetchWebhooks()).results;
+  if (hooks.some((h) => h.url === url && !h.disabledAt)) return "ok";
+  const ours = hooks.find((h) => h.url.includes("/api/pluggy/webhook"));
+  if (ours) {
+    await api.updateWebhook(ours.id, { url, event: "all", enabled: true });
+    return "updated";
+  }
+  await api.createWebhook("all", url);
+  return "created";
+}
+
+/** Ask Pluggy to fetch fresh data from the bank. MeuPluggy items refuse this: Pluggy refreshes them once a day. */
+export async function requestRefresh(db: Db) {
+  const items = await db.query<{ id: string; connector_name: string | null; next_auto_sync_at: string | null }>("SELECT id, connector_name, next_auto_sync_at FROM items");
+  const out: { id: string; name: string; requested: boolean; nextAuto: string | null; reason?: string }[] = [];
+  for (const it of items) {
+    const name = it.connector_name ?? "banco";
+    if (/meu ?pluggy/i.test(name)) {
+      out.push({ id: it.id, name, requested: false, nextAuto: it.next_auto_sync_at, reason: "MeuPluggy só atualiza na rotina diária da Pluggy" });
+      continue;
+    }
+    try {
+      await pluggy().updateItem(it.id);
+      out.push({ id: it.id, name, requested: true, nextAuto: it.next_auto_sync_at });
+    } catch (e) {
+      out.push({ id: it.id, name, requested: false, nextAuto: it.next_auto_sync_at, reason: (e as { message?: string }).message ?? "recusado" });
+    }
+  }
+  return out;
+}
+
 export async function syncAll(): Promise<SyncResult> {
   const db = await getDb();
   await registerEnvItems(db);
+  try {
+    await ensureWebhook();
+  } catch (e) {
+    console.error("ensureWebhook", (e as Error).message);
+  }
   const items = await db.query<{ id: string }>("SELECT id FROM items");
   const res: SyncResult = { items: 0, accounts: 0, transactions: 0, errors: [] };
   for (const { id } of items) {
@@ -47,6 +91,7 @@ export async function syncItem(itemId: string, dbIn?: Db) {
        status = EXCLUDED.status, consent_expires_at = EXCLUDED.consent_expires_at`,
     [itemId, item.connector.name, item.connector.primaryColor ? `#${item.connector.primaryColor.replace(/^#/, "")}` : null, item.status, item.consentExpiresAt ? isoDay(item.consentExpiresAt) : null],
   );
+  await db.query("UPDATE items SET next_auto_sync_at = $2 WHERE id = $1", [itemId, item.nextAutoSyncAt ? new Date(item.nextAutoSyncAt).toISOString() : null]);
 
   const rules = await db.query<Rule>("SELECT pattern, group_key, sub_label FROM category_rules");
   const accounts = (await api.fetchAccounts(itemId)).results;
