@@ -5,6 +5,7 @@ import { GROUPS, group } from "../categories";
 import { monthStart, today, validYm, ymOf } from "../dates";
 import { getDb } from "../db";
 import { normalize } from "../categorize";
+import { txHref } from "../txFilter";
 import { accounts, cardsView, installmentsView, investmentsView, overview, txsBetween } from "../queries";
 
 const GROUP_ENUM = ["moradia", "alim", "compras", "saude", "lazer", "transp", "outros"] as const;
@@ -64,8 +65,11 @@ export const TOOL_DEFS = [
           (i.tipo === "todas" || (i.tipo === "entrada" ? t.direction === "in" : t.direction === "out")) &&
           !t.excluded,
       );
+      const subs = [...new Set(all.map((t) => `${t.group_key}:${t.sub_label}`))];
+      const cats = sub && subs.length === 1 ? subs : i.categoria ? [i.categoria] : [];
       return {
         periodo: { de: from, ate: to },
+        link: txHref({ from, to, cats, q: i.texto ?? "", kind: i.tipo === "entrada" ? "in" : i.tipo === "todas" ? "all" : "out" }),
         quantidade: all.length,
         total: round(all.reduce((s, t) => s + t.amount, 0)),
         transacoes: all.slice(0, i.limite ?? 30).map((t) => ({ id: t.id, data: t.date, descricao: t.description, valor: t.amount, tipo: t.direction === "in" ? "entrada" : "saida", categoria: t.group_key, subcategoria: t.sub_label, parcela: t.total_installments ? `${t.installment_number}/${t.total_installments}` : undefined })),

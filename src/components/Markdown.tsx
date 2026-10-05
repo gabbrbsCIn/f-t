@@ -1,8 +1,15 @@
-// Renders the small subset of Markdown the assistant is told to use: **bold**, "- " lists and paragraphs.
+import Link from "next/link";
+
+// Renders the small subset of Markdown the assistant is told to use: **bold**, [links](/in-app), "- " lists and paragraphs.
 function inline(text: string, key: string) {
-  return text.split(/(\*\*[^*]+\*\*)/g).map((part, i) =>
-    part.startsWith("**") && part.endsWith("**") ? <strong key={`${key}-${i}`}>{part.slice(2, -2)}</strong> : <span key={`${key}-${i}`}>{part}</span>,
-  );
+  return text.split(/(\*\*[^*]+\*\*|\[[^\]]+\]\([^)\s]+\))/g).map((part, i) => {
+    const k = `${key}-${i}`;
+    if (part.startsWith("**") && part.endsWith("**")) return <strong key={k}>{part.slice(2, -2)}</strong>;
+    const link = part.match(/^\[([^\]]+)\]\(([^)\s]+)\)$/);
+    // Only links inside the app: the model never sends you somewhere else.
+    if (link) return link[2].startsWith("/") && !link[2].startsWith("//") ? <Link key={k} href={link[2]} className="md-link">{link[1]} →</Link> : <span key={k}>{link[1]}</span>;
+    return <span key={k}>{part}</span>;
+  });
 }
 
 export function Markdown({ text }: { text: string }) {

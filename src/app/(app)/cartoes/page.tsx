@@ -1,7 +1,9 @@
 import { BillsChart } from "@/components/charts";
-import { dayShort, monthShort, ymOf } from "@/lib/dates";
+import { dayShort, monthShort, today, ymOf } from "@/lib/dates";
 import { BRL } from "@/lib/format";
 import { cardsView } from "@/lib/queries";
+import { txHref } from "@/lib/txFilter";
+import Link from "next/link";
 
 export const metadata = { title: "Cartões · liu liu" };
 
@@ -39,6 +41,10 @@ export default async function Cards() {
               <div><div className="k">Fatura atual</div><div className="v">{BRL(fat)}</div></div>
               <div><div className="k">Fecha</div><div className="v">{c.close_date ? dayShort(c.close_date) : "—"}</div></div>
               <div><div className="k">Vence</div><div className="v">{c.due_date ? dayShort(c.due_date) : "—"}</div></div>
+            </div>
+            <div className="foot" style={{ marginTop: 0 }}>
+              <span>Compras deste cartão</span>
+              <Link className="more" href={txHref({ ym: ymOf(today()), accounts: [c.id] })}>ver transações ↗</Link>
             </div>
             <div>
               <div className="ph"><span className="lbl">Últimas faturas</span><span className="faint" style={{ fontSize: 12 }}>tracejado: já comprometido</span></div>

@@ -1,7 +1,9 @@
 import { BankTile } from "@/components/BankTile";
 import { CommittedChart } from "@/components/charts";
 import { group } from "@/lib/categories";
-import { monthName, monthShort, today, ymOf } from "@/lib/dates";
+import { addMonths, monthName, monthShort, monthStart, today, ymOf } from "@/lib/dates";
+import { txHref } from "@/lib/txFilter";
+import Link from "next/link";
 import { BRL } from "@/lib/format";
 import { accounts, expectedIncome, installmentsView } from "@/lib/queries";
 
@@ -38,7 +40,10 @@ export default async function Installments() {
             <div className="inst" key={p.key}>
               <div style={{ display: "flex", gap: 12, alignItems: "center", minWidth: 0 }}>
                 <BankTile name={a?.institution ?? a?.name ?? "?"} color={a?.color ?? null} />
-                <div style={{ minWidth: 0 }}><div className="t1">{p.description}</div><div className="t2">{a?.institution ?? ""} · {p.total}× de {BRL(p.value)}</div></div>
+                <div style={{ minWidth: 0 }}>
+                  <Link className="t1 sub-link inst-link" href={txHref({ from: monthStart(addMonths(ymOf(p.lastDate), 1 - p.current)), to: today(), q: p.description, accounts: [p.account_id], installments: true })} title="Ver as parcelas já pagas">{p.description}</Link>
+                  <div className="t2">{a?.institution ?? ""} · {p.total}× de {BRL(p.value)}</div>
+                </div>
               </div>
               <div className="mid">
                 <div style={{ display: "flex", justifyContent: "space-between", fontSize: 12 }} className="faint">

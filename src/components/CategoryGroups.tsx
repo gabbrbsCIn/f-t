@@ -1,10 +1,12 @@
 "use client";
+import Link from "next/link";
 import { useState } from "react";
 import { group, type GroupKey } from "@/lib/categories";
 import { BRL } from "@/lib/format";
+import { txHref } from "@/lib/txFilter";
 import { Icon } from "./Icon";
 
-export function CategoryGroups({ groups, total }: { groups: { key: GroupKey; total: number; subs: { label: string; total: number }[] }[]; total: number }) {
+export function CategoryGroups({ ym, groups, total }: { ym: string; groups: { key: GroupKey; total: number; subs: { label: string; total: number }[] }[]; total: number }) {
   const shown = groups.filter((g) => g.total > 0);
   const [open, setOpen] = useState<Set<string>>(new Set(shown.slice(0, 3).map((g) => g.key)));
   const max = shown[0]?.total ?? 1;
@@ -29,12 +31,13 @@ export function CategoryGroups({ groups, total }: { groups: { key: GroupKey; tot
             </button>
             <div className="subs">
               {g.subs.map((s) => (
-                <div className="sub" key={s.label}>
+                <Link className="sub go sub-link" key={s.label} href={txHref({ ym, kind: "out", cats: [`${g.key}:${s.label}`] })} title={`Ver transações de ${s.label}`}>
                   <span className="t1" style={{ fontWeight: 400 }}>{s.label}</span>
                   <span className="amt">{BRL(s.total)}</span>
                   <span className="bar"><i style={{ width: `${(s.total / g.total) * 100}%`, background: `color-mix(in srgb, ${meta.color} 70%, transparent)` }} /></span>
-                </div>
+                </Link>
               ))}
+              <Link className="go-all" href={txHref({ ym, kind: "out", cats: [g.key] })}>Ver todas as transações de {meta.name} →</Link>
             </div>
           </div>
         );

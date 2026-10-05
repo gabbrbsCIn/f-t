@@ -1,14 +1,14 @@
-import { MonthSwitch } from "@/components/MonthSwitch";
-import { TxList, type TxView } from "@/components/TxList";
-import { today, validYm, ymOf } from "@/lib/dates";
+import { TxList, type AccountOption, type TxView } from "@/components/TxList";
+import { today } from "@/lib/dates";
 import { categoryOptions } from "@/lib/actions";
-import { accounts, txsOfMonth } from "@/lib/queries";
+import { accounts, txsBetween } from "@/lib/queries";
+import { parseFilter } from "@/lib/txFilter";
 
 export const metadata = { title: "Transações · liu liu" };
 
-export default async function Transactions({ searchParams }: { searchParams: Promise<{ m?: string }> }) {
-  const ym = validYm((await searchParams).m) ?? ymOf(today());
-  const [txs, accs, options] = await Promise.all([txsOfMonth(ym), accounts(), categoryOptions()]);
+export default async function Transactions({ searchParams }: { searchParams: Promise<Record<string, string | string[] | undefined>> }) {
+  const filter = parseFilter(await searchParams, today());
+  const [txs, accs, options] = await Promise.all([txsBetween(filter.from, filter.to), accounts(), categoryOptions()]);
   const byId = new Map(accs.map((a) => [a.id, a]));
   const view: TxView[] = txs.map((t) => {
     const a = byId.get(t.account_id);
@@ -20,14 +20,10 @@ export default async function Transactions({ searchParams }: { searchParams: Pro
       account: { id: t.account_id, name: a?.institution ?? a?.name ?? "Dinheiro", color: a?.color ?? null, type: a?.type ?? "MANUAL" },
     };
   });
-  const cardFilters = accs.filter((a) => a.type === "CREDIT").map((a) => ({ id: a.id, label: `Cartão ${a.institution ?? a.name}` }));
-  return (
-    <>
-      <div className="screen-h">
-        <MonthSwitch ym={ym} path="/transacoes" />
-        <span className="faint" style={{ fontSize: 12.5 }}>clique numa transação para ver e editar</span>
-      </div>
-      <TxList txs={view} today={today()} accounts={cardFilters} options={options} />
-    </>
-  );
+  const accountOptions: AccountOption[] = accs.map((a) => {
+    const name = a.institution ?? a.name;
+    const kind = a.type === "CREDIT" ? `cartão${a.number ? ` •••• ${a.number.slice(-4)}` : ""}` : a.type === "BANK" ? (a.subtype === "SAVINGS_ACCOUNT" ? "poupança" : "conta") : "";
+    return { id: a.id, name, label: kind ? `${name} · ${kind}` : name, color: a.color };
+  });
+  return <TxList txs={view} today={today()} accounts={accountOptions} options={options} filter={filter} />;
 }

@@ -176,8 +176,8 @@ svg.i{width:16px; height:16px; fill:none; stroke:currentColor; stroke-width:1.6;
 
 /* Categories screen */
 .ruler{display:flex; gap:2px; height:14px; margin:16px 0 10px}
-.ruler i{display:block; height:100%; border-radius:3px; min-width:3px; position:relative}
-.ruler i:hover{filter:brightness(1.2)}
+.ruler i, .ruler a{display:block; height:100%; border-radius:3px; min-width:3px; position:relative}
+.ruler i:hover, .ruler a:hover{filter:brightness(1.2)}
 .group{border-top:1px solid var(--line)}
 .group:first-child{border-top:0}
 .gh{display:grid; grid-template-columns:20px 44px minmax(0,1fr) auto minmax(80px,140px); gap:12px; align-items:center; width:100%; padding:14px 20px; text-align:left}
@@ -391,3 +391,54 @@ button.inv-row:hover{background:var(--raise)}
 .check{display:flex; gap:8px; align-items:center; font-size:12.5px; color:var(--fg-2); margin-top:8px; cursor:pointer}
 @container app (max-width: 640px){ .tx-sum{grid-template-columns:1fr 1fr} .tx-sum b{font-size:17px} }
 .scrim{overflow:auto}
+
+/* Transaction filters */
+.period{display:flex; align-items:center; gap:8px; flex-wrap:wrap}
+.period .month span{min-width:150px}
+.month button.mbtn:not(:disabled):hover{background:var(--raise); color:var(--fg)}
+.tb-sep{width:1px; height:22px; background:var(--line-2)}
+.fm{position:relative}
+.fm-btn{display:inline-flex; align-items:center; gap:6px; padding:6px 10px 6px 12px; border-radius:999px; border:1px solid var(--line-2); font-size:13px; color:var(--fg-2)}
+.fm-btn:hover{border-color:var(--fg-3); color:var(--fg)}
+.fm-btn.on{border-color:var(--mint); color:var(--fg)}
+.fm-n{min-width:18px; height:18px; padding:0 5px; border-radius:9px; background:var(--mint); color:var(--mint-ink); font-size:11px; font-weight:700; display:grid; place-items:center}
+.fm-pop{position:absolute; top:calc(100% + 6px); left:0; z-index:30; background:var(--panel); border:1px solid var(--line-2); border-radius:12px; box-shadow:0 16px 40px #0007; min-width:240px; max-width:min(360px, calc(100vw - 32px))}
+.fm-pop.wide{width:320px}
+.fm-pop.right{left:auto; right:0}
+.fm-body{padding:10px}
+.fm-list{max-height:320px; padding:0}
+.fm-row{display:flex; align-items:center; gap:8px; padding:6px 6px; border-radius:7px; font-size:13.5px; cursor:pointer}
+.fm-row:hover{background:var(--raise)}
+.fm-row input{accent-color:var(--mint); margin:0}
+.fm-row .grow{flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+.fm-g{font-weight:600}
+.fm-s{padding-left:28px; color:var(--fg-2)}
+.fm-presets .cp-opt{padding:7px 10px; border-radius:7px}
+.fm-range{border-top:1px solid var(--line); margin-top:8px; padding-top:10px}
+.fm-range .field, .fm-body form .field{padding:7px 9px; min-width:0}
+.pills{display:flex; flex-wrap:wrap; gap:6px; align-items:center; margin:-4px 0 12px}
+.pill{display:inline-flex; align-items:center; gap:6px; padding:4px 8px 4px 10px; border-radius:999px; background:var(--raise); border:1px solid var(--line-2); font-size:12.5px; color:var(--fg)}
+.pill:hover{border-color:var(--fg-3)}
+.pill svg{color:var(--fg-3)}
+.pill-clear, .linkish{font-size:12.5px; color:var(--mint); padding:4px 6px; text-decoration:underline; text-underline-offset:3px}
+a.linked{color:inherit; text-decoration:none; display:contents}
+.cal a.d{text-decoration:none; cursor:pointer}
+.cal a.d:hover{outline:1.5px solid var(--fg-2); outline-offset:1px}
+.sub-link{color:inherit; text-decoration:none}
+.sub.go:hover .t1{color:var(--fg); text-decoration:underline; text-underline-offset:3px}
+.go-all{display:inline-block; font-size:12.5px; color:var(--mint); padding:8px 0 4px 18px; text-decoration:none}
+.go-all:hover{text-decoration:underline; text-underline-offset:3px}
+@container app (max-width: 640px){ .tb-sep{display:none} .fm-pop.wide{width:min(320px, calc(100vw - 32px))} }
+.md-link{color:var(--mint); text-decoration:underline; text-underline-offset:3px}
+.legend .legend-link{display:inline-flex; align-items:center; gap:7px; color:inherit; text-decoration:none}
+.legend .legend-link:hover{color:var(--fg)}
+.chart svg a{cursor:pointer}
+.chart svg a:hover .hit{filter:brightness(1.15)}
+.tbl a.row-link{color:inherit; text-decoration:none; display:inline-flex; align-items:center; gap:8px}
+.tbl a.row-link:hover{text-decoration:underline; text-underline-offset:3px}
+a.row{color:inherit; text-decoration:none; margin:0 -8px; padding:10px 8px; border-radius:8px}
+a.row:hover{background:var(--raise)}
+.inst-link{display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+.inst-link:hover{text-decoration:underline; text-underline-offset:3px}
+.fm-btn svg{transform:rotate(90deg); color:var(--fg-3)}
+.fm-btn[aria-expanded="true"] svg{transform:rotate(-90deg)}

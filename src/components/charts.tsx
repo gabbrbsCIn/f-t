@@ -1,8 +1,25 @@
 "use client";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { group, type GroupKey } from "@/lib/categories";
 import { BRL, BRLk } from "@/lib/format";
+import { txHref } from "@/lib/txFilter";
 import { useTip } from "./useTip";
+
+const dayOf = (ym: string, d: number) => `${ym}-${String(d).padStart(2, "0")}`;
+
+/** SVG <a> elements navigate inside the app instead of reloading the page. */
+function useSvgLinks() {
+  const router = useRouter();
+  return (e: React.MouseEvent) => {
+    const a = (e.target as Element).closest("a");
+    const href = a?.getAttribute("href");
+    if (!href?.startsWith("/") || e.metaKey || e.ctrlKey || e.shiftKey) return;
+    e.preventDefault();
+    router.push(href);
+  };
+}
 
 function niceMax(v: number) {
   if (v <= 0) return 100;
@@ -62,6 +79,7 @@ export function PaceChart({ cum, prevCum, current, prevLabel }: { cum: number[];
 
 /** One bar per day, colored by the group with the most spending that day; income and bills marked as events. */
 export function MonthLine(p: {
+  ym: string;
   daily: number[];
   dominant: (GroupKey | null)[];
   today: number;
@@ -81,9 +99,10 @@ export function MonthLine(p: {
   const inc = new Map<number, number>();
   p.income.forEach((e) => inc.set(e.day, (inc.get(e.day) ?? 0) + e.amount));
   let lastBillX = -999, billRow = 0;
+  const go = useSvgLinks();
   return (
-    <div className="chart" ref={tip.ref} onPointerOver={tip.onOver} onPointerLeave={tip.onLeave}>
-      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Gasto por dia no mês, com entradas e vencimentos marcados">
+    <div className="chart" ref={tip.ref} onPointerOver={tip.onOver} onPointerLeave={tip.onLeave} onClick={go}>
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Gasto por dia no mês, com entradas e vencimentos marcados. Clique num dia para ver as transações.">
         <line className="gl" x1={L} x2={W - R} y1={base} y2={base} />
         {p.daily.map((v, i) => {
           const d = i + 1, x = L + i * step + (step - bw) / 2, cx = x + bw / 2;
@@ -92,25 +111,26 @@ export function MonthLine(p: {
           if (!v || !g) return null;
           const yy = y(v), over = v > cap;
           return (
-            <g key={d}>
-              <path d={`M${x},${base}V${yy + 3}q0,-3 3,-3h${bw - 6}q3,0 3,3V${base}Z`} fill={group(g).color} data-t={`${String(d).padStart(2, "0")} ${p.monthShort} · ${BRL(v)}\nmais em ${group(g).name}`} />
+            <a key={d} href={txHref({ from: dayOf(p.ym, d), kind: "out" })} aria-label={`Dia ${d}: ${BRL(v)}`}>
+              <rect x={x - (step - bw) / 2} y={topY - 10} width={step} height={base - topY + 10} fill="transparent" />
+              <path className="hit" d={`M${x},${base}V${yy + 3}q0,-3 3,-3h${bw - 6}q3,0 3,3V${base}Z`} fill={group(g).color} data-t={`${String(d).padStart(2, "0")} ${p.monthShort} · ${BRL(v)}\nmais em ${group(g).name}\nclique para ver as transações`} />
               {over && (
                 <>
                   <path d={`M${x - 1},${yy + 12}l${bw + 2},-5v5l-${bw + 2},5z`} fill="var(--panel)" />
                   <text className="ax" x={cx} y={yy - 5} textAnchor="middle" style={{ fill: "var(--fg-2)" }}>{BRLk(v)}</text>
                 </>
               )}
-            </g>
+            </a>
           );
         })}
         {[...inc.entries()].map(([d, amount]) => {
           const cx = L + (d - 1) * step + step / 2;
           return (
-            <g key={`in${d}`}>
-              <path d={`M${cx},8l5,7h-10z`} fill="var(--pos)" />
+            <a key={`in${d}`} href={txHref({ from: dayOf(p.ym, d), kind: "in" })} aria-label={`Entrada no dia ${d}`}>
+              <path d={`M${cx},8l5,7h-10z`} fill="var(--pos)" data-t={`${String(d).padStart(2, "0")} ${p.monthShort} · entrou ${BRL(amount)}`} />
               <text className="ax" x={cx + 8} y={16} style={{ fill: "var(--pos)", fontWeight: 600 }}>+ {BRL(amount).replace(",00", "")}</text>
               <line x1={cx} x2={cx} y1={18} y2={base} stroke="var(--pos)" strokeDasharray="2 4" opacity={0.6} />
-            </g>
+            </a>
           );
         })}
         {p.bills.map((b) => {
@@ -134,7 +154,7 @@ export function MonthLine(p: {
   );
 }
 
-export function Heatmap({ daily, firstWeekday, today, monthShort }: { daily: number[]; firstWeekday: number; today: number; monthShort: string }) {
+export function Heatmap({ ym, daily, firstWeekday, today, monthShort }: { ym: string; daily: number[]; firstWeekday: number; today: number; monthShort: string }) {
   const tip = useTip();
   const past = daily.slice(0, today).filter((v) => v > 0).sort((a, b) => b - a);
   const max = past[Math.min(2, past.length - 1)] ?? 1; // third-highest day, so one huge bill doesn't flatten the rest
@@ -148,7 +168,11 @@ export function Heatmap({ daily, firstWeekday, today, monthShort }: { daily: num
           const d = i + 1;
           if (d > today) return <div key={d} className="d fut">{d}</div>;
           const l = v > 0 ? Math.max(1, Math.min(4, Math.ceil((v / max) * 4))) : 0;
-          return <div key={d} className={`d ${l >= 3 ? "hot" : ""} ${d === today ? "today" : ""}`} style={{ background: shade(l) }} data-t={`${String(d).padStart(2, "0")} ${monthShort} · ${BRL(v)}`}>{d}</div>;
+          return (
+            <Link key={d} href={txHref({ from: dayOf(ym, d), kind: "out" })} className={`d ${l >= 3 ? "hot" : ""} ${d === today ? "today" : ""}`} style={{ background: shade(l) }} data-t={`${String(d).padStart(2, "0")} ${monthShort} · ${BRL(v)}`} aria-label={`Dia ${d}: ${BRL(v)}. Ver transações`}>
+              {d}
+            </Link>
+          );
         })}
       </div>
       {tip.node}
@@ -157,7 +181,7 @@ export function Heatmap({ daily, firstWeekday, today, monthShort }: { daily: num
 }
 
 /** Proportion bar of the month's spending by group. */
-export function Ruler({ groups, total }: { groups: { key: GroupKey; total: number }[]; total: number }) {
+export function Ruler({ ym, groups, total }: { ym: string; groups: { key: GroupKey; total: number }[]; total: number }) {
   const tip = useTip();
   const shown = groups.filter((g) => g.total > 0);
   return (
@@ -165,14 +189,14 @@ export function Ruler({ groups, total }: { groups: { key: GroupKey; total: numbe
       <div className="chart" ref={tip.ref} onPointerOver={tip.onOver} onPointerLeave={tip.onLeave} style={{ marginTop: 0 }}>
         <div className="ruler">
           {shown.map((g) => (
-            <i key={g.key} style={{ flex: g.total, background: group(g.key).color }} data-t={`${group(g.key).name} · ${BRL(g.total)} · ${((g.total / total) * 100).toFixed(1).replace(".", ",")}%`} />
+            <Link key={g.key} href={txHref({ ym, kind: "out", cats: [g.key] })} style={{ flex: g.total, background: group(g.key).color }} data-t={`${group(g.key).name} · ${BRL(g.total)} · ${((g.total / total) * 100).toFixed(1).replace(".", ",")}%`} aria-label={`${group(g.key).name}: ver transações`} />
           ))}
         </div>
         {tip.node}
       </div>
       <div className="legend" style={{ marginTop: 0 }}>
         {shown.map((g) => (
-          <span key={g.key}><i className="sq" style={{ background: group(g.key).color }} />{group(g.key).name} <span className="faint n">{Math.round((g.total / total) * 100)}%</span></span>
+          <Link key={g.key} href={txHref({ ym, kind: "out", cats: [g.key] })} className="legend-link"><i className="sq" style={{ background: group(g.key).color }} />{group(g.key).name} <span className="faint n">{Math.round((g.total / total) * 100)}%</span></Link>
         ))}
       </div>
     </>

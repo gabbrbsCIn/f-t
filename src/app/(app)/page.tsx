@@ -10,6 +10,8 @@ import { addMonths, dayShort, monthName, monthShort, today, validYm, weekday, ym
 import { BRL } from "@/lib/format";
 import { headline, notes } from "@/lib/insights";
 import { pluggyConfigured } from "@/lib/pluggy";
+import { txHref } from "@/lib/txFilter";
+import Link from "next/link";
 import { hasData, overview, txsOfMonth } from "@/lib/queries";
 
 const WEEKDAYS = ["domingo", "segunda", "terça", "quarta", "quinta", "sexta", "sábado"];
@@ -95,12 +97,12 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ m
       <article className="p s12 ml">
         <div className="ph">
           <span className="lbl">Linha do mês</span>
-          <span className="faint" style={{ fontSize: 12 }}>cada barra é um dia, na cor da categoria em que você mais gastou</span>
+          <span className="faint" style={{ fontSize: 12 }}>cada barra é um dia, na cor da categoria em que você mais gastou · clique para ver o dia</span>
         </div>
-        <MonthLine daily={o.daily} dominant={o.dominant} today={o.day} monthShort={monthShort(ym)} income={o.incomeEvents} bills={o.billEvents} />
+        <MonthLine ym={ym} daily={o.daily} dominant={o.dominant} today={o.day} monthShort={monthShort(ym)} income={o.incomeEvents} bills={o.billEvents} />
         <div className="legend">
           {o.groups.filter((g) => g.total > 0).map((g) => (
-            <span key={g.key}><i className="sq" style={{ background: group(g.key).color }} />{group(g.key).name}{group(g.key).note && <span className="faint"> · nota de R$ {group(g.key).note}</span>}</span>
+            <Link key={g.key} href={txHref({ ym, kind: "out", cats: [g.key] })} className="legend-link"><i className="sq" style={{ background: group(g.key).color }} />{group(g.key).name}{group(g.key).note && <span className="faint"> · nota de R$ {group(g.key).note}</span>}</Link>
           ))}
         </div>
       </article>
@@ -118,12 +120,12 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ m
 
       <article className="p s6">
         <div className="ph">
-          <span className="lbl">Mapa de calor</span>
+          <span className="lbl">Mapa de calor <span className="faint" style={{ textTransform: "none", letterSpacing: 0, fontWeight: 400 }}>· clique num dia</span></span>
           <span className="scale">menos <i style={{ background: "var(--raise)" }} /><i style={{ background: "color-mix(in srgb,var(--mint) 25%,var(--raise))" }} /><i style={{ background: "color-mix(in srgb,var(--mint) 50%,var(--raise))" }} /><i style={{ background: "color-mix(in srgb,var(--mint) 75%,var(--raise))" }} /><i style={{ background: "var(--mint)" }} /> mais</span>
         </div>
         <div className="big">{BRL(o.day ? o.spent / o.day : 0)} <small>por dia, em média</small></div>
         {o.weekday.avg > 0 && <div style={{ fontSize: 12.5, color: "var(--fg-2)", marginTop: 4 }}>Tirando moradia e parcelas, <b style={{ color: "var(--fg)" }}>{WEEKDAYS[o.weekday.index]}</b> é seu dia mais caro: {BRL(o.weekday.avg)} em média.</div>}
-        <Heatmap daily={o.daily} firstWeekday={weekday(`${ym}-01`)} today={o.day} monthShort={monthShort(ym)} />
+        <Heatmap ym={ym} daily={o.daily} firstWeekday={weekday(`${ym}-01`)} today={o.day} monthShort={monthShort(ym)} />
       </article>
 
       <article className="p s6">
@@ -131,11 +133,11 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ m
         <div className="big">{BRL(bankTotal)} <small>saldo total</small></div>
         <div className="rows">
           {o.bank.map((a) => (
-            <div className="row" key={a.id}>
+            <Link className="row" key={a.id} href={txHref({ ym, accounts: [a.id] })} title="Ver transações desta conta">
               <BankTile name={a.institution ?? a.name} color={a.color} />
               <div className="grow"><div className="t1">{a.institution ?? a.name}</div><div className="t2">{a.subtype === "SAVINGS_ACCOUNT" ? "Poupança" : "Conta corrente"}</div></div>
               <span className="amt">{BRL(a.balance)}</span>
-            </div>
+            </Link>
           ))}
         </div>
         <div className="foot"><span>{o.bank.length} {o.bank.length === 1 ? "conta" : "contas"} · via Open Finance</span>{o.invested > 0 && <a href="/investimentos">Investido: <b className="n" style={{ color: "var(--fg)" }}>{BRL(o.invested)}</b> ↗</a>}</div>
@@ -147,7 +149,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ m
         <div style={{ fontSize: 12.5, color: "var(--fg-2)", marginTop: 4 }}>de {BRL(limitTotal)} de limite total</div>
         <div className="rows">
           {o.cards.map((c) => (
-            <div className="row" key={c.id}>
+            <Link className="row" key={c.id} href={txHref({ ym, accounts: [c.id] })} title="Ver transações deste cartão">
               <BankTile name={c.institution ?? c.name} color={c.color} />
               <div className="grow">
                 <div className="t1">{c.institution ?? c.name} {c.number ? `•••• ${c.number.slice(-4)}` : ""}</div>
@@ -155,7 +157,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ m
                 <div className="t2" style={{ marginTop: 4 }}>{c.due_date ? `Vence ${dayShort(c.due_date)} · ` : ""}fatura {BRL(Math.abs(c.balance))}</div>
               </div>
               <div><div className="amt">{BRL(c.available_limit ?? 0)}</div><div className="t2" style={{ textAlign: "right" }}>disponível</div></div>
-            </div>
+            </Link>
           ))}
         </div>
         <div className="foot"><span>{o.cards.length} {o.cards.length === 1 ? "cartão" : "cartões"}</span>{nextDue && <span>Próxima fatura: {dayShort(nextDue)}</span>}</div>
@@ -172,7 +174,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ m
                 const cls = d === null ? "flat" : d === 0 ? "flat" : d > 0 ? "bad" : "good";
                 return (
                   <tr key={g.key}>
-                    <td><span style={{ display: "inline-flex", alignItems: "center", gap: 8 }}><i className="cdot" style={{ background: group(g.key).color }} />{group(g.key).name}</span></td>
+                    <td><Link className="row-link" href={txHref({ ym, kind: "out", cats: [g.key] })} title="Ver transações"><i className="cdot" style={{ background: group(g.key).color }} />{group(g.key).name}</Link></td>
                     <td className="r n" style={{ fontWeight: 600 }}>{BRL(g.total)}</td>
                     <td className="vs hide-s"><div className="vsbar"><div className="prev" style={{ width: `${(g.prev / gmax) * 100}%` }} /><div className="cur" style={{ width: `calc(${(g.total / gmax) * 100}% - 2px)`, background: group(g.key).color }} /></div></td>
                     <td className="r"><span className={`chg ${cls}`}>{d === null ? "novo" : `${d > 0 ? "+" : ""}${d}%`}</span></td>

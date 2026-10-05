@@ -20,11 +20,11 @@ export default async function Categories({ searchParams }: { searchParams: Promi
           <div><div className="big" style={{ margin: 0, fontSize: 34 }}>{BRL(spent)}</div><div className="faint" style={{ fontSize: 12.5, marginTop: 2 }}>gasto em {monthName(ym)} de {ym.slice(0, 4)}</div></div>
           <MonthSwitch ym={ym} path="/categorias" />
         </div>
-        {spent > 0 && <Ruler groups={groups} total={spent} />}
+        {spent > 0 && <Ruler ym={ym} groups={groups} total={spent} />}
       </article>
       <article className="p s12 plist">
-        <div className="ph" style={{ padding: "16px 20px 8px" }}><span className="lbl">Categorias</span><span className="faint" style={{ fontSize: 12 }}>toque para abrir</span></div>
-        <CategoryGroups groups={groups} total={spent || 1} />
+        <div className="ph" style={{ padding: "16px 20px 8px" }}><span className="lbl">Categorias</span><span className="faint" style={{ fontSize: 12 }}>toque para abrir · clique numa subcategoria para ver as transações</span></div>
+        <CategoryGroups ym={ym} groups={groups} total={spent || 1} />
       </article>
     </div>
   );
